@@ -92,8 +92,7 @@ import edu.wpi.first.wpilibj.Timer;
   public void autonomousInit() {
     time1.start();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    time1.delay(1.2);
-
+    new WaitCommand(1);
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
