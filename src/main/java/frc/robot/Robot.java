@@ -22,7 +22,9 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.Timer;
-
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -91,8 +93,9 @@ import edu.wpi.first.wpilibj.Timer;
   @Override
   public void autonomousInit() {
     time1.start();
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     new WaitCommand(1);
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -103,20 +106,19 @@ import edu.wpi.first.wpilibj.Timer;
   @Override
   public void autonomousPeriodic() {
 
-    leftFlywheel.set(.65);
-    rightFlywheel.set(.65);
-    intake1.set(1);
+    leftFlywheel.set(.7);
+    rightFlywheel.set(.7);
+    intake1.set(-1);
     intake2.set(-1);
-    if (time1.get() > .5 ) {
+    if (time1.get() > 1 ) {
       index1.set(.75);
       index2.set(.75); 
-    } else if(time1.get()>.6 && time1.get()<2){
+    } else if(time1.get()>1.8 && time1.get()<3.9){
       index1.stopMotor();
       index2.stopMotor();
-    }else{
-      index1.set(1);
-      index2.set(1);
-      
+    }else if(time1.get() >4 && time1.get()<4.5) {
+      index1.set(.75);
+      index2.set(.75);
     }
   }
 
@@ -135,6 +137,8 @@ import edu.wpi.first.wpilibj.Timer;
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    leftArm.setNeutralMode(NeutralModeValue.Brake);
+    rightArm.setNeutralMode(NeutralModeValue.Brake);
     if (driver.getRawButton(PS4Controller.Button.kCross.value)) {
       m_robotContainer.changeSpeed(.5);
     }
