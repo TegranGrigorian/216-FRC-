@@ -46,7 +46,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
 
   private Command m_autonomousCommand;
-
+  private Command m_midAutonCommand;
   private RobotContainer m_robotContainer;
 
   private final Joystick operator = new Joystick(1);
@@ -93,33 +93,60 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
   @Override
   public void autonomousInit() {
     time1.start();
-    new WaitCommand(1);
+    leftFlywheel.set(.7);
+    rightFlywheel.set(.7);
+    new WaitCommand(2);
+    index1.set(1);
+    index2.set(1); 
+    intake1.set(-1);
+    intake2.set(-1);
+    new WaitCommand(2.5);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    
+    m_midAutonCommand = m_robotContainer.midAutonCommand();
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+      //m_autonomousCommand.schedule(); //left side autonomous command
+      m_midAutonCommand.schedule();
     }
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-
-    leftFlywheel.set(.7);
-    rightFlywheel.set(.7);
-    intake1.set(-1);
-    intake2.set(-1);
-    if (time1.get() > 1 ) {
-      index1.set(.75);
-      index2.set(.75); 
-    } else if(time1.get()>1.8 && time1.get()<3.9){
+    //Beginning Mid autonomous code
+    if (time1.get() > 1.5 && time1.get() < 2.5){
       index1.stopMotor();
       index2.stopMotor();
-    }else if(time1.get() >4 && time1.get()<4.5) {
-      index1.set(.75);
-      index2.set(.75);
+      
     }
+    else if (time1.get() > 4.5 && time1.get() < 5.5){
+      index1.set(1);
+      index2.set(1);
+    } 
+    else if (time1.get() > 5.8 && time1.get() < 8) {
+      leftFlywheel.stopMotor();
+      rightFlywheel.stopMotor();
+      index1.stopMotor();
+      index2.stopMotor();
+      intake1.stopMotor();
+      intake2.stopMotor();
+    }
+
+
+    // // begining left side Autonomus code
+    // if (time1.get() > 1 && time1.get() < 1.1 ) {
+    //   index1.set(.75);
+    //   index2.set(.75); 
+    // } else if(time1.get()>1.2 && time1.get()<4.9){
+    //   index1.stopMotor();
+    //   index2.stopMotor();
+    // }else if(time1.get() >6.5 && time1.get()<10.5) {
+    //   index1.set(.75);
+    //   index2.set(.75);
+    // }
+    // // end of begining left side autonomus code
+
+
   }
 
   @Override
