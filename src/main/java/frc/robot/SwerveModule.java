@@ -29,6 +29,7 @@ public class SwerveModule {
 
     /* angle motor control requests */
     private final PositionVoltage anglePosition = new PositionVoltage(0);
+
     public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
         this.moduleNumber = moduleNumber;
         this.angleOffset = moduleConstants.angleOffset;

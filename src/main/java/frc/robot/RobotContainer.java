@@ -22,18 +22,13 @@ public class RobotContainer {
     private final Joystick driver = new Joystick(0);
 
     /* Drive Controls */
-    double driveSpeed = 1;
-    boolean toggleSped = false;
     private final int translationAxis = PS4Controller.Axis.kLeftY.value;
     private final int strafeAxis = PS4Controller.Axis.kLeftX.value;
     private final int rotationAxis = PS4Controller.Axis.kRightX.value;
 
-
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, PS4Controller.Button.kTriangle.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, PS4Controller.Button.kL1.value);
-    //private final JoystickButton armMovement = new JoystickButton(driver,XboxController.Button.kRightBumper.value);
-
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -78,9 +73,5 @@ public class RobotContainer {
     
     public Command midAutonCommand(){
         return new midauto(s_Swerve);
-    }
-
-    public void changeSpeed(double speed) {
-        driveSpeed = speed;
     }
 }

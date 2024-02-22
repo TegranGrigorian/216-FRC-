@@ -155,8 +155,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    leftArm.setNeutralMode(NeutralModeValue.Brake);
+    rightArm.setNeutralMode(NeutralModeValue.Brake);
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+      
     }
 
   }
@@ -164,16 +167,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    leftArm.setNeutralMode(NeutralModeValue.Brake);
-    rightArm.setNeutralMode(NeutralModeValue.Brake);
-    if (driver.getRawButton(PS4Controller.Button.kCross.value)) {
-      m_robotContainer.changeSpeed(.5);
-    }
-    if (driver.getRawButton(PS4Controller.Button.kCircle.value)) {
-      m_robotContainer.changeSpeed(1);
-    }
-    leftArm.setNeutralMode(NeutralModeValue.Brake);
-    rightArm.setNeutralMode(NeutralModeValue.Brake);
+
     if (driver.getRawButton(PS4Controller.Button.kL1.value)) {
       index1.set(-.75);
       index2.set(-.75);
