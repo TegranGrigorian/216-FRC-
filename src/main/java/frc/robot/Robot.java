@@ -42,13 +42,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
   Spark intake1 = new Spark(2);
   Spark intake2 = new Spark(3);
   private Timer time1 = new Timer();
+  private boolean autonSwitch = false;
   //private final Joystick driver = new Joystick(0);
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
 
   private Command m_autonomousCommand;
   private Command m_midAutonCommand;
   private RobotContainer m_robotContainer;
-
+  private Command m_rightAutoCommand0;
+  private Command m_rightAutoCommand1;
+  private Command m_rightAutoCommand2;
   private final Joystick operator = new Joystick(1);
   private final Joystick driver = new Joystick(0);
   // private final JoystickButton flywheelOn = new JoystickButton(operator,XboxController.Button.kA.value);
@@ -95,18 +98,26 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
     time1.start();
     leftFlywheel.set(.7);
     rightFlywheel.set(.7);
-    new WaitCommand(2);
-    index1.set(1);
-    index2.set(1); 
+    //new WaitCommand(3);
+    // index1.set(1);
+    // index2.set(1); 
     intake1.set(-1);
     intake2.set(-1);
-    new WaitCommand(2.5);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_midAutonCommand = m_robotContainer.midAutonCommand();
+    m_rightAutoCommand0 = m_robotContainer.rightAutoCommand0();
+    m_rightAutoCommand1 = m_robotContainer.rightautoCommand1();
+    m_rightAutoCommand2 = m_robotContainer.rightAutoCommand2();
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       //m_autonomousCommand.schedule(); //left side autonomous command
-      m_midAutonCommand.schedule();
+
+      //Mid Auton
+      // m_midAutonCommand.schedule();
+
+      //Right Side Auton
+      m_rightAutoCommand0.schedule();
+      //m_rightAutoCommand1.schedule();
     }
   }
 
@@ -114,23 +125,24 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
   @Override
   public void autonomousPeriodic() {
     //Beginning Mid autonomous code
-    if (time1.get() > 1.5 && time1.get() < 2.5){
-      index1.stopMotor();
-      index2.stopMotor();
+
+    // if (time1.get() > 1.5 && time1.get() < 2.5){
+    //   index1.stopMotor();
+    //   index2.stopMotor();
       
-    }
-    else if (time1.get() > 4.5 && time1.get() < 5.5){
-      index1.set(1);
-      index2.set(1);
-    } 
-    else if (time1.get() > 5.8 && time1.get() < 8) {
-      leftFlywheel.stopMotor();
-      rightFlywheel.stopMotor();
-      index1.stopMotor();
-      index2.stopMotor();
-      intake1.stopMotor();
-      intake2.stopMotor();
-    }
+    // }
+    // else if (time1.get() > 4.5 && time1.get() < 5.5){
+    //   index1.set(1);
+    //   index2.set(1);
+    // } 
+    // else if (time1.get() > 5.8 && time1.get() < 8) {
+    //   leftFlywheel.stopMotor();
+    //   rightFlywheel.stopMotor();
+    //   index1.stopMotor();
+    //   index2.stopMotor();
+    //   intake1.stopMotor();
+    //   intake2.stopMotor();
+    // }
 
 
     // // begining left side Autonomus code
@@ -147,7 +159,26 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
     // // end of begining left side autonomus code
 
 
+    // // beggining of right side auton
+
+    if (time1.get() < 2) {
+      index1.set(1);
+      index2.set(1);
+    }
+    if (time1.get() > 3.5 && time1.get() < 4){
+      leftFlywheel.set(.5);
+      rightFlywheel.set(.5);
+    }
+    if (time1.get() > 7 && autonSwitch == false && time1.get() < 10){
+      autonSwitch = true;
+      m_rightAutoCommand1.schedule();
+    }
+    if (time1.get() > 10.5 && autonSwitch == true){
+      autonSwitch = false;
+      m_rightAutoCommand2.schedule();
+    }
   }
+    
 
   @Override
   public void teleopInit() {
