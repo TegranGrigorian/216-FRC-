@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 // import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.autos.exampleAuto;
 
 //motor libraries
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -24,6 +25,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -54,11 +56,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
   private Command m_rightAutoCommand2;
   private final Joystick operator = new Joystick(1);
   private final Joystick driver = new Joystick(0);
+  private static final String kDefaultAuto = "ExampleAuto";
+  private static final String kCustomAuto = "My Auto";
+  private String m_autoSelected;
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
   // private final JoystickButton flywheelOn = new JoystickButton(operator,XboxController.Button.kA.value);
   //private final JoystickButton armMovement = new JoystickButton(driver,XboxController.Button.kRightBumper.value);
   
   /**
-   * This function is run when the robot is first started up and should be used for any
+   * This function is run when the robot is first started up and shoulutd be used for any
    * initialization code.
    */
   @Override
@@ -66,6 +72,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    
 
   }
 
@@ -95,14 +102,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+   
     time1.start();
     leftFlywheel.set(.7);
     rightFlywheel.set(.7);
     //new WaitCommand(3);
-    // index1.set(1);
-    // index2.set(1); 
+    index1.set(1);
+    index2.set(1); 
     intake1.set(-1);
     intake2.set(-1);
+    
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_midAutonCommand = m_robotContainer.midAutonCommand();
     m_rightAutoCommand0 = m_robotContainer.rightAutoCommand0();
@@ -110,13 +119,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
     m_rightAutoCommand2 = m_robotContainer.rightAutoCommand2();
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
-      //m_autonomousCommand.schedule(); //left side autonomous command
+      m_autonomousCommand.schedule(); //left side autonomous command
 
       //Mid Auton
       // m_midAutonCommand.schedule();
 
       //Right Side Auton
-      m_rightAutoCommand0.schedule();
+      // m_rightAutoCommand0.schedule();
       //m_rightAutoCommand1.schedule();
     }
   }
@@ -124,25 +133,26 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+    
     //Beginning Mid autonomous code
 
-    // if (time1.get() > 1.5 && time1.get() < 2.5){
-    //   index1.stopMotor();
-    //   index2.stopMotor();
+    if (time1.get() > 1.5 && time1.get() < 2.5){
+      index1.stopMotor();
+      index2.stopMotor();
       
-    // }
-    // else if (time1.get() > 4.5 && time1.get() < 5.5){
-    //   index1.set(1);
-    //   index2.set(1);
-    // } 
-    // else if (time1.get() > 5.8 && time1.get() < 8) {
-    //   leftFlywheel.stopMotor();
-    //   rightFlywheel.stopMotor();
-    //   index1.stopMotor();
-    //   index2.stopMotor();
-    //   intake1.stopMotor();
-    //   intake2.stopMotor();
-    // }
+    }
+    else if (time1.get() > 4.5 && time1.get() < 5.5){
+      index1.set(1);
+      index2.set(1);
+    } 
+    else if (time1.get() > 5.8 && time1.get() < 8) {
+      leftFlywheel.stopMotor();
+      rightFlywheel.stopMotor();
+      index1.stopMotor();
+      index2.stopMotor();
+      intake1.stopMotor();
+      intake2.stopMotor();
+    }
 
 
     // // begining left side Autonomus code
@@ -161,22 +171,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
     // // beggining of right side auton
 
-    if (time1.get() < 2) {
-      index1.set(1);
-      index2.set(1);
-    }
-    if (time1.get() > 3.5 && time1.get() < 4){
-      leftFlywheel.set(.5);
-      rightFlywheel.set(.5);
-    }
-    if (time1.get() > 7 && autonSwitch == false && time1.get() < 10){
-      autonSwitch = true;
-      m_rightAutoCommand1.schedule();
-    }
-    if (time1.get() > 10.5 && autonSwitch == true){
-      autonSwitch = false;
-      m_rightAutoCommand2.schedule();
-    }
+    // if (time1.get() < 2) {
+    //   index1.set(1);
+    //   index2.set(1);
+    // }
+    // if (time1.get() > 3.5 && time1.get() < 4){
+    //   leftFlywheel.set(.5);
+    //   rightFlywheel.set(.5);
+    // }
+    // if (time1.get() > 7 && autonSwitch == false && time1.get() < 10){
+    //   autonSwitch = true;
+    //   m_rightAutoCommand1.schedule();
+    // }
+    // if (time1.get() > 10.5 && autonSwitch == true){
+    //   autonSwitch = false;
+    //   m_rightAutoCommand2.schedule();
+    // }
   }
     
 
@@ -226,7 +236,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
     } else if (operator.getRawButton(XboxController.Button.kB.value)) {
       leftFlywheel.set(-.4);
       rightFlywheel.set(-.4);
-    } else { 
+    
+    } else if (operator.getRawButton(XboxController.Button.kY.value)){
+      leftFlywheel.set(.7);
+      rightFlywheel.set(.8);
+    }
+    else { 
+
       leftFlywheel.stopMotor();
       rightFlywheel.stopMotor();
     }

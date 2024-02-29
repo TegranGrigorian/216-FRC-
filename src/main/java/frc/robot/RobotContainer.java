@@ -3,13 +3,21 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
+import frc.robot.Constants.AutoConstants;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+import edu.wpi.first.wpilibj.shuffleboard.EventImportance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,6 +27,8 @@ import frc.robot.subsystems.*;
  */
 public class RobotContainer {
     /* Controllers */
+
+    SendableChooser<Command> m_chooser = new SendableChooser<>();
     private final Joystick driver = new Joystick(0);
 
     /* Drive Controls */
@@ -48,6 +58,35 @@ public class RobotContainer {
         
         // Configure the button bindings
         configureButtonBindings();
+
+         // Add commands to the autonomous command chooser
+    m_chooser.setDefaultOption("Default", getAutonomousCommand());
+    m_chooser.addOption("Mid", midAutonCommand());
+     m_chooser.addOption("Right", rightAutoCommand0());
+     
+    // Put the chooser on the dashboard
+    SmartDashboard.putData(m_chooser);
+//     Shuffleboard.getTab("Autonomous").add(m_chooser);
+//     CommandScheduler.getInstance()
+//     .onCommandInitialize(
+//         command ->
+//             Shuffleboard.addEventMarker(
+//                 "Command initialized", command.getName(), EventImportance.kNormal));
+// CommandScheduler.getInstance()
+//     .onCommandExecute(
+//         command ->
+//             Shuffleboard.addEventMarker(
+//                 "Command executed", command.getName(), EventImportance.kNormal));
+// CommandScheduler.getInstance()
+//     .onCommandFinish(
+//         command ->
+//             Shuffleboard.addEventMarker(
+//                 "Command finished", command.getName(), EventImportance.kNormal));
+// CommandScheduler.getInstance()
+//     .onCommandInterrupt(
+//         command ->
+//             Shuffleboard.addEventMarker(
+//                 "Command interrupted", command.getName(), EventImportance.kNormal));
     }
 
     /**
@@ -68,7 +107,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new exampleAuto(s_Swerve);
+        return m_chooser.getSelected();
     }
     
     public Command midAutonCommand(){
@@ -83,4 +122,8 @@ public class RobotContainer {
     public Command rightAutoCommand2(){
         return new rightsideauto3(s_Swerve);
     }
+
+     
+  
+
 }
