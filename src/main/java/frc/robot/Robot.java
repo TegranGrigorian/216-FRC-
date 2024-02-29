@@ -106,9 +106,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
     time1.start();
     leftFlywheel.set(.7);
     rightFlywheel.set(.7);
-    //new WaitCommand(3);
-    index1.set(1);
-    index2.set(1); 
+    new WaitCommand(3);
     intake1.set(-1);
     intake2.set(-1);
     
@@ -135,7 +133,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
   public void autonomousPeriodic() {
     
     //Beginning Mid autonomous code
-
+    if (time1.get() > .7 && time1.get() < 1.2) {
+      index1.set(1);
+      index2.set(1); 
+    }
     if (time1.get() > 1.5 && time1.get() < 2.5){
       index1.stopMotor();
       index2.stopMotor();
@@ -231,15 +232,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
       intake2.stopMotor();
     }
     if (operator.getRawButton(XboxController.Button.kA.value)) {
-      leftFlywheel.set(.7);//.65
-      rightFlywheel.set(.7);//.65
+      leftFlywheel.set(.75);//.65
+      rightFlywheel.set(.75);//.65
     } else if (operator.getRawButton(XboxController.Button.kB.value)) {
       leftFlywheel.set(-.4);
       rightFlywheel.set(-.4);
     
     } else if (operator.getRawButton(XboxController.Button.kY.value)){
-      leftFlywheel.set(.7);
-      rightFlywheel.set(.8);
+      leftFlywheel.set(.75);
+      rightFlywheel.set(.85);
     }
     else { 
 
