@@ -218,6 +218,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
     } else if (driver.getRawButton(PS4Controller.Button.kR1.value)) {
       index1.set(.75);
       index2.set(.75);
+    }else if (driver.getRawButton(PS4Controller.Button.kCircle.value)){
+      index1.set(.25);
+      index2.set(.25);
     } else {
       index1.stopMotor();
       index2.stopMotor();
@@ -239,10 +242,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
     } else if (operator.getRawButton(XboxController.Button.kB.value)) {
       leftFlywheel.set(-.4);
       rightFlywheel.set(-.4);
-    
+  
     } else if (operator.getRawButton(XboxController.Button.kY.value)){
       leftFlywheel.set(.15);
       rightFlywheel.set(.32);
+    } else if (operator.getRawButton(XboxController.Button.kX.value)){
+      leftFlywheel.set(.05);
+      rightFlywheel.set(.05);
     }
     else { 
 
