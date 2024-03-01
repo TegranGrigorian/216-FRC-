@@ -134,40 +134,40 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
   public void autonomousPeriodic() {
     
     //Beginning Mid autonomous code
-    // if (time1.get() > .7 && time1.get() < 1.2) {
-    //   index1.set(1);
-    //   index2.set(1); 
-    // }
-    // if (time1.get() > 1.5 && time1.get() < 2.5){
-    //   index1.stopMotor();
-    //   index2.stopMotor();
+    if (time1.get() > .7 && time1.get() < 1.2) {
+      index1.set(1);
+      index2.set(1); 
+    }
+    if (time1.get() > 1.5 && time1.get() < 2.5){
+      index1.stopMotor();
+      index2.stopMotor();
       
-    // }
-    // else if (time1.get() > 4.5 && time1.get() < 5.5){
-    //   index1.set(1);
-    //   index2.set(1);
-    // } 
-    // else if (time1.get() > 5.8 && time1.get() < 8) {
-    //   leftFlywheel.stopMotor();
-    //   rightFlywheel.stopMotor();
-    //   index1.stopMotor();
-    //   index2.stopMotor();
-    //   intake1.stopMotor();
-    //   intake2.stopMotor();
-    // }
+    }
+    else if (time1.get() > 4.5 && time1.get() < 5.5){
+      index1.set(1);
+      index2.set(1);
+    } 
+    else if (time1.get() > 5.8 && time1.get() < 8) {
+      leftFlywheel.stopMotor();
+      rightFlywheel.stopMotor();
+      index1.stopMotor();
+      index2.stopMotor();
+      intake1.stopMotor();
+      intake2.stopMotor();
+    }
 
 
     // begining left side Autonomus code
-    if (time1.get() > 1 && time1.get() < 1.1 ) {
-      index1.set(.75);
-      index2.set(.75); 
-    } else if(time1.get()>1.2 && time1.get()<4.9){
-      index1.stopMotor();
-      index2.stopMotor();
-    }else if(time1.get() >6.5 && time1.get()<10.5) {
-      index1.set(.75);
-      index2.set(.75);
-    }
+    // if (time1.get() > 1 && time1.get() < 1.1 ) {
+    //   index1.set(.75);
+    //   index2.set(.75); 
+    // } else if(time1.get()>1.2 && time1.get()<4.9){
+    //   index1.stopMotor();
+    //   index2.stopMotor();
+    // }else if(time1.get() >6.5 && time1.get()<10.5) {
+    //   index1.set(.75);
+    //   index2.set(.75);
+    // }
     // end of begining left side autonomus code
 
 
@@ -241,8 +241,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
       rightFlywheel.set(-.4);
     
     } else if (operator.getRawButton(XboxController.Button.kY.value)){
-      leftFlywheel.set(.85);
-      rightFlywheel.set(.95);
+      leftFlywheel.set(.15);
+      rightFlywheel.set(.32);
     }
     else { 
 
