@@ -43,6 +43,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
   Spark index2 = new Spark(1);
   Spark intake1 = new Spark(2);
   Spark intake2 = new Spark(3);
+  private Timer time2 = new Timer();
   private Timer time1 = new Timer();
   private boolean autonSwitch = false;
   //private final Joystick driver = new Joystick(0);
@@ -104,8 +105,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
   public void autonomousInit() {
    
     time1.start();
-    leftFlywheel.set(.7);
-    rightFlywheel.set(.7);
+    leftFlywheel.set(.8);
+    rightFlywheel.set(.8);
     new WaitCommand(3);
     intake1.set(-1);
     intake2.set(-1);
@@ -133,41 +134,41 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
   public void autonomousPeriodic() {
     
     //Beginning Mid autonomous code
-    if (time1.get() > .7 && time1.get() < 1.2) {
-      index1.set(1);
-      index2.set(1); 
-    }
-    if (time1.get() > 1.5 && time1.get() < 2.5){
-      index1.stopMotor();
-      index2.stopMotor();
-      
-    }
-    else if (time1.get() > 4.5 && time1.get() < 5.5){
-      index1.set(1);
-      index2.set(1);
-    } 
-    else if (time1.get() > 5.8 && time1.get() < 8) {
-      leftFlywheel.stopMotor();
-      rightFlywheel.stopMotor();
-      index1.stopMotor();
-      index2.stopMotor();
-      intake1.stopMotor();
-      intake2.stopMotor();
-    }
-
-
-    // // begining left side Autonomus code
-    // if (time1.get() > 1 && time1.get() < 1.1 ) {
-    //   index1.set(.75);
-    //   index2.set(.75); 
-    // } else if(time1.get()>1.2 && time1.get()<4.9){
+    // if (time1.get() > .7 && time1.get() < 1.2) {
+    //   index1.set(1);
+    //   index2.set(1); 
+    // }
+    // if (time1.get() > 1.5 && time1.get() < 2.5){
     //   index1.stopMotor();
     //   index2.stopMotor();
-    // }else if(time1.get() >6.5 && time1.get()<10.5) {
-    //   index1.set(.75);
-    //   index2.set(.75);
+      
     // }
-    // // end of begining left side autonomus code
+    // else if (time1.get() > 4.5 && time1.get() < 5.5){
+    //   index1.set(1);
+    //   index2.set(1);
+    // } 
+    // else if (time1.get() > 5.8 && time1.get() < 8) {
+    //   leftFlywheel.stopMotor();
+    //   rightFlywheel.stopMotor();
+    //   index1.stopMotor();
+    //   index2.stopMotor();
+    //   intake1.stopMotor();
+    //   intake2.stopMotor();
+    // }
+
+
+    // begining left side Autonomus code
+    if (time1.get() > 1 && time1.get() < 1.1 ) {
+      index1.set(.75);
+      index2.set(.75); 
+    } else if(time1.get()>1.2 && time1.get()<4.9){
+      index1.stopMotor();
+      index2.stopMotor();
+    }else if(time1.get() >6.5 && time1.get()<10.5) {
+      index1.set(.75);
+      index2.set(.75);
+    }
+    // end of begining left side autonomus code
 
 
     // // beggining of right side auton
@@ -203,12 +204,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
       m_autonomousCommand.cancel();
       
     }
-
+    time2.start();
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+      SmartDashboard.putNumber("matchtime", time2.get());
 
     if (driver.getRawButton(PS4Controller.Button.kL1.value)) {
       index1.set(-.75);
@@ -232,15 +234,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
       intake2.stopMotor();
     }
     if (operator.getRawButton(XboxController.Button.kA.value)) {
-      leftFlywheel.set(.75);//.65
-      rightFlywheel.set(.75);//.65
+      leftFlywheel.set(.85);//.65
+      rightFlywheel.set(.85);//.65
     } else if (operator.getRawButton(XboxController.Button.kB.value)) {
       leftFlywheel.set(-.4);
       rightFlywheel.set(-.4);
     
     } else if (operator.getRawButton(XboxController.Button.kY.value)){
-      leftFlywheel.set(.75);
-      rightFlywheel.set(.85);
+      leftFlywheel.set(.85);
+      rightFlywheel.set(.95);
     }
     else { 
 
