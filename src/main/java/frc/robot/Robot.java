@@ -17,16 +17,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 // import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.autos.exampleAuto;
-
-//motor libraries
+//motor and external libraries
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -126,7 +123,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
       //Right Side Auton
       // m_rightAutoCommand0.schedule();
       //m_rightAutoCommand1.schedule();
-    }
+    }    
   }
 
   /** This function is called periodically during autonomous. */
