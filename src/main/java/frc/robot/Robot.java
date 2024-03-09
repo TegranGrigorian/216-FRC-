@@ -23,6 +23,10 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Solenoid;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -32,6 +36,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 
  public class Robot extends TimedRobot {
+//Pneumatic Code
+  private final Compressor m_compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+  private final Solenoid s1 = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
+  private final Solenoid s2 = new Solenoid(PneumaticsModuleType.CTREPCM,1);
   TalonFX leftFlywheel = new TalonFX(5);
   TalonFX rightFlywheel = new TalonFX(10);
   TalonFX leftArm = new TalonFX(2);
@@ -43,6 +51,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
   private Timer time2 = new Timer();
   private Timer time1 = new Timer();
   private boolean autonSwitch = false;
+  private boolean hangToggle = false;
   //private final Joystick driver = new Joystick(0);
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
 
@@ -70,7 +79,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    
+    m_compressor.enableDigital();
 
   }
 
@@ -208,7 +217,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
   @Override
   public void teleopPeriodic() {
       SmartDashboard.putNumber("matchtime", time2.get());
-
+    s1.set(hangToggle);
+    s2.set(hangToggle);
+    if (operator.getRawButton(XboxController.Button.kRightBumper.value) && hangToggle == false) {
+      new WaitCommand(.2);
+      hangToggle = true;
+    }
+    if (operator.getRawButton(XboxController.Button.kLeftBumper.value) && hangToggle == true) {
+      new WaitCommand(.2);
+      hangToggle = true;
+    }
     if (driver.getRawButton(PS4Controller.Button.kL1.value)) {
       index1.set(-.75);
       index2.set(-.75);
