@@ -39,7 +39,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 //Pneumatic Code
   private final Compressor m_compressor = new Compressor(PneumaticsModuleType.CTREPCM);
   private final Solenoid s1 = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
-  private final Solenoid s2 = new Solenoid(PneumaticsModuleType.CTREPCM,1);
+  private final Solenoid s2 = new Solenoid(PneumaticsModuleType.CTREPCM,7);
   TalonFX leftFlywheel = new TalonFX(5);
   TalonFX rightFlywheel = new TalonFX(10);
   TalonFX leftArm = new TalonFX(2);
