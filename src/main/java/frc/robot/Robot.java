@@ -25,8 +25,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -40,8 +43,12 @@ import edu.wpi.first.wpilibj.Solenoid;
   private final Compressor m_compressor = new Compressor(PneumaticsModuleType.CTREPCM);
   private final Solenoid s1 = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
   private final Solenoid s2 = new Solenoid(PneumaticsModuleType.CTREPCM,1);
+  //laser break
+  DigitalInput laserBreak = new DigitalInput(0);
   TalonFX leftFlywheel = new TalonFX(5);
   TalonFX rightFlywheel = new TalonFX(10);
+  AddressableLED led1 = new AddressableLED(5); // led object
+  AddressableLEDBuffer led1Buffer = new AddressableLEDBuffer(60);
   TalonFX leftArm = new TalonFX(2);
   TalonFX rightArm = new TalonFX(1);
   Spark index1 = new Spark(0);
@@ -63,10 +70,11 @@ import edu.wpi.first.wpilibj.Solenoid;
   private Command m_rightAutoCommand2;
   private final Joystick operator = new Joystick(1);
   private final Joystick driver = new Joystick(0);
-  private static final String kDefaultAuto = "ExampleAuto";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
+  // private static final String kDefaultAuto = "ExampleAuto";
+  // private static final String kCustomAuto = "My Auto";
+  // private String m_autoSelected;
+  // private final SendableChooser<String> m_chooser = new SendableChooser<>();
   // private final JoystickButton flywheelOn = new JoystickButton(operator,XboxController.Button.kA.value);
   //private final JoystickButton armMovement = new JoystickButton(driver,XboxController.Button.kRightBumper.value);
   
@@ -74,6 +82,23 @@ import edu.wpi.first.wpilibj.Solenoid;
    * This function is run when the robot is first started up and shoulutd be used for any
    * initialization code.
    */
+
+  private void rainbowLed() {
+    int rainbowPixel = 0;
+    for (var i = 0; i < led1Buffer.getLength(); i++) {
+      int hue = (rainbowPixel + (i * 180 / led1Buffer.getLength())) % 180;
+      led1Buffer.setHSV(i, hue, 255, 128);
+    }
+    rainbowPixel += 3;
+    rainbowPixel %= 180;
+  }
+  private void redLed() {
+    for (var i = 0; i < led1Buffer.getLength(); i++) {
+      led1Buffer.setHSV(i, 0, 100, 100);
+   }
+   
+   led1.setData(led1Buffer);
+  }
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -81,6 +106,13 @@ import edu.wpi.first.wpilibj.Solenoid;
     m_robotContainer = new RobotContainer();
     m_compressor.enableDigital();
 
+    //led code
+    led1.setLength(led1Buffer.getLength());
+
+    //send led data
+
+    led1.setData(led1Buffer);
+    led1.start();
   }
 
   /**
@@ -138,8 +170,8 @@ import edu.wpi.first.wpilibj.Solenoid;
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    
-    //Beginning Mid autonomous code
+    if (m_robotContainer.m_chooser.getSelected() == m_midAutonCommand) {
+      //Beginning Mid autonomous code
     if (time1.get() > .7 && time1.get() < 1.2) {
       index1.set(1);
       index2.set(1); 
@@ -163,6 +195,8 @@ import edu.wpi.first.wpilibj.Solenoid;
     }
 
 
+    }
+    
     // begining left side Autonomus code
     // if (time1.get() > 1 && time1.get() < 1.1 ) {
     //   index1.set(.75);
@@ -216,7 +250,12 @@ import edu.wpi.first.wpilibj.Solenoid;
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-      SmartDashboard.putNumber("matchtime", time2.get());
+    if (laserBreak.get() == true) {
+      rainbowLed();
+    } else {
+      redLed(); 
+    }
+    SmartDashboard.putNumber("matchtime", time2.get());
     s1.set(hangToggle);
     s2.set(hangToggle);
     if (operator.getRawButton(XboxController.Button.kRightBumper.value) && hangToggle == false) {
@@ -281,6 +320,8 @@ import edu.wpi.first.wpilibj.Solenoid;
       leftArm.stopMotor();
       rightArm.stopMotor();
     }
+    led1.setData(led1Buffer);
+
 
   }
 
