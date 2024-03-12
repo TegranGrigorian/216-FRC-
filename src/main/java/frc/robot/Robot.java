@@ -194,42 +194,40 @@ import edu.wpi.first.wpilibj.DigitalInput;
       intake2.stopMotor();
     }
 
-
-    }
-    
-    // begining left side Autonomus code
-    // if (time1.get() > 1 && time1.get() < 1.1 ) {
-    //   index1.set(.75);
-    //   index2.set(.75); 
-    // } else if(time1.get()>1.2 && time1.get()<4.9){
-    //   index1.stopMotor();
-    //   index2.stopMotor();
-    // }else if(time1.get() >6.5 && time1.get()<10.5) {
-    //   index1.set(.75);
-    //   index2.set(.75);
-    // }
-    // end of begining left side autonomus code
-
-
-    // // beggining of right side auton
-
-    // if (time1.get() < 2) {
-    //   index1.set(1);
-    //   index2.set(1);
-    // }
-    // if (time1.get() > 3.5 && time1.get() < 4){
-    //   leftFlywheel.set(.5);
-    //   rightFlywheel.set(.5);
-    // }
-    // if (time1.get() > 7 && autonSwitch == false && time1.get() < 10){
-    //   autonSwitch = true;
-    //   m_rightAutoCommand1.schedule();
-    // }
-    // if (time1.get() > 10.5 && autonSwitch == true){
-    //   autonSwitch = false;
-    //   m_rightAutoCommand2.schedule();
-    // }
+  } if (m_robotContainer.m_chooser.getSelected() == m_autonomousCommand) {
+      // begining left side Autonomus code
+      if (time1.get() > 1 && time1.get() < 1.1 ) {
+        index1.set(.75);
+        index2.set(.75); 
+      } else if(time1.get()>1.2 && time1.get()<4.9){
+        index1.stopMotor();
+        index2.stopMotor();
+      }else if(time1.get() >6.5 && time1.get()<10.5) {
+        index1.set(.75);
+        index2.set(.75);
+      }
+      // end of begining left side autonomus code
+    } if (m_robotContainer.m_chooser.getSelected() == m_rightAutoCommand0) {
+      // beggining of right side auton
+      if (time1.get() < 2) {
+        index1.set(1);
+        index2.set(1);
+      }
+      if (time1.get() > 3.5 && time1.get() < 4){
+        leftFlywheel.set(.5);
+        rightFlywheel.set(.5);
+      }
+      if (time1.get() > 7 && autonSwitch == false && time1.get() < 10){
+        autonSwitch = true;
+        m_rightAutoCommand1.schedule();
+      }
+      if (time1.get() > 10.5 && autonSwitch == true){
+        autonSwitch = false;
+        m_rightAutoCommand2.schedule();
+      }
   }
+}
+    
     
 
   @Override
