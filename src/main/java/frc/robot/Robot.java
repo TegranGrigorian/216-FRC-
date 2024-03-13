@@ -222,7 +222,7 @@ import edu.wpi.first.wpilibj.Solenoid;
       new WaitCommand(.2);
     }
     if (operator.getRawButton(XboxController.Button.kLeftBumper.value) && hangToggle == true) {
-      hangToggle = true;
+      hangToggle = false;
       new WaitCommand(.2);
     }
     if (driver.getRawButton(PS4Controller.Button.kL1.value)) {
