@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -63,10 +62,7 @@ import edu.wpi.first.wpilibj.Solenoid;
   private Command m_rightAutoCommand2;
   private final Joystick operator = new Joystick(1);
   private final Joystick driver = new Joystick(0);
-  private static final String kDefaultAuto = "ExampleAuto";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
   // private final JoystickButton flywheelOn = new JoystickButton(operator,XboxController.Button.kA.value);
   //private final JoystickButton armMovement = new JoystickButton(driver,XboxController.Button.kRightBumper.value);
   
@@ -138,63 +134,65 @@ import edu.wpi.first.wpilibj.Solenoid;
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+    if (m_robotContainer.m_chooser.getSelected() == m_midAutonCommand) {
+        //Beginning Mid autonomous code
+      if (time1.get() > .7 && time1.get() < 1.2) {
+        index1.set(1);
+        index2.set(1); 
+      }
+      if (time1.get() > 1.5 && time1.get() < 2.5){
+        index1.stopMotor();
+        index2.stopMotor();
+        
+      }
+      else if (time1.get() > 4.5 && time1.get() < 5.5){
+        index1.set(1);
+        index2.set(1);
+      } 
+      else if (time1.get() > 5.8 && time1.get() < 8) {
+        leftFlywheel.stopMotor();
+        rightFlywheel.stopMotor();
+        index1.stopMotor();
+        index2.stopMotor();
+        intake1.stopMotor();
+        intake2.stopMotor();
+      }
+    }
     
-    //Beginning Mid autonomous code
-    if (time1.get() > .7 && time1.get() < 1.2) {
-      index1.set(1);
-      index2.set(1); 
+    if (m_robotContainer.m_chooser.getSelected() == m_autonomousCommand) {
+      // begining left side Autonomus code
+      if (time1.get() > 1 && time1.get() < 1.1 ) {
+        index1.set(.75);
+        index2.set(.75); 
+      } else if(time1.get()>1.2 && time1.get()<4.9){
+        index1.stopMotor();
+        index2.stopMotor();
+      }else if(time1.get() >6.5 && time1.get()<10.5) {
+        index1.set(.75);
+        index2.set(.75);
+      }
+      // end of begining left side autonomus code
     }
-    if (time1.get() > 1.5 && time1.get() < 2.5){
-      index1.stopMotor();
-      index2.stopMotor();
-      
+    if (m_robotContainer.m_chooser.getSelected() == m_rightAutoCommand0) {
+      // // beggining of right side auton
+      if (time1.get() < 2) {
+        index1.set(1);
+        index2.set(1);
+      }
+      if (time1.get() > 3.5 && time1.get() < 4){
+        leftFlywheel.set(.5);
+        rightFlywheel.set(.5);
+      }
+      if (time1.get() > 7 && autonSwitch == false && time1.get() < 10){
+        autonSwitch = true;
+        m_rightAutoCommand1.schedule();
+      }
+      if (time1.get() > 10.5 && autonSwitch == true){
+        autonSwitch = false;
+        m_rightAutoCommand2.schedule();
+      }
     }
-    else if (time1.get() > 4.5 && time1.get() < 5.5){
-      index1.set(1);
-      index2.set(1);
-    } 
-    else if (time1.get() > 5.8 && time1.get() < 8) {
-      leftFlywheel.stopMotor();
-      rightFlywheel.stopMotor();
-      index1.stopMotor();
-      index2.stopMotor();
-      intake1.stopMotor();
-      intake2.stopMotor();
-    }
-
-
-    // begining left side Autonomus code
-    // if (time1.get() > 1 && time1.get() < 1.1 ) {
-    //   index1.set(.75);
-    //   index2.set(.75); 
-    // } else if(time1.get()>1.2 && time1.get()<4.9){
-    //   index1.stopMotor();
-    //   index2.stopMotor();
-    // }else if(time1.get() >6.5 && time1.get()<10.5) {
-    //   index1.set(.75);
-    //   index2.set(.75);
-    // }
-    // end of begining left side autonomus code
-
-
-    // // beggining of right side auton
-
-    // if (time1.get() < 2) {
-    //   index1.set(1);
-    //   index2.set(1);
-    // }
-    // if (time1.get() > 3.5 && time1.get() < 4){
-    //   leftFlywheel.set(.5);
-    //   rightFlywheel.set(.5);
-    // }
-    // if (time1.get() > 7 && autonSwitch == false && time1.get() < 10){
-    //   autonSwitch = true;
-    //   m_rightAutoCommand1.schedule();
-    // }
-    // if (time1.get() > 10.5 && autonSwitch == true){
-    //   autonSwitch = false;
-    //   m_rightAutoCommand2.schedule();
-    // }
+    
   }
     
 
