@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -43,8 +42,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
   private final Compressor m_compressor = new Compressor(PneumaticsModuleType.CTREPCM);
   private final Solenoid s1 = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
   private final Solenoid s2 = new Solenoid(PneumaticsModuleType.CTREPCM,1);
-  //laser break
-  DigitalInput laserBreak = new DigitalInput(0);
   TalonFX leftFlywheel = new TalonFX(5);
   TalonFX rightFlywheel = new TalonFX(10);
   AddressableLED led1 = new AddressableLED(5); // led object
@@ -70,10 +67,9 @@ import edu.wpi.first.wpilibj.DigitalInput;
   private Command m_rightAutoCommand2;
   private final Joystick operator = new Joystick(1);
   private final Joystick driver = new Joystick(0);
-
-  // private static final String kDefaultAuto = "ExampleAuto";
-  // private static final String kCustomAuto = "My Auto";
-  // private String m_autoSelected;
+  private static final String kDefaultAuto = "ExampleAuto";
+  private static final String kCustomAuto = "My Auto";
+  private String m_autoSelected;
   // private final SendableChooser<String> m_chooser = new SendableChooser<>();
   // private final JoystickButton flywheelOn = new JoystickButton(operator,XboxController.Button.kA.value);
   //private final JoystickButton armMovement = new JoystickButton(driver,XboxController.Button.kRightBumper.value);
@@ -170,8 +166,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    if (m_robotContainer.m_chooser.getSelected() == m_midAutonCommand) {
-      //Beginning Mid autonomous code
+    
+    //Beginning Mid autonomous code
     if (time1.get() > .7 && time1.get() < 1.2) {
       index1.set(1);
       index2.set(1); 
@@ -194,39 +190,41 @@ import edu.wpi.first.wpilibj.DigitalInput;
       intake2.stopMotor();
     }
 
-  } if (m_robotContainer.m_chooser.getSelected() == m_autonomousCommand) {
-      // begining left side Autonomus code
-      if (time1.get() > 1 && time1.get() < 1.1 ) {
-        index1.set(.75);
-        index2.set(.75); 
-      } else if(time1.get()>1.2 && time1.get()<4.9){
-        index1.stopMotor();
-        index2.stopMotor();
-      }else if(time1.get() >6.5 && time1.get()<10.5) {
-        index1.set(.75);
-        index2.set(.75);
-      }
-      // end of begining left side autonomus code
-    } if (m_robotContainer.m_chooser.getSelected() == m_rightAutoCommand0) {
-      // beggining of right side auton
-      if (time1.get() < 2) {
-        index1.set(1);
-        index2.set(1);
-      }
-      if (time1.get() > 3.5 && time1.get() < 4){
-        leftFlywheel.set(.5);
-        rightFlywheel.set(.5);
-      }
-      if (time1.get() > 7 && autonSwitch == false && time1.get() < 10){
-        autonSwitch = true;
-        m_rightAutoCommand1.schedule();
-      }
-      if (time1.get() > 10.5 && autonSwitch == true){
-        autonSwitch = false;
-        m_rightAutoCommand2.schedule();
-      }
+
+    // begining left side Autonomus code
+    // if (time1.get() > 1 && time1.get() < 1.1 ) {
+    //   index1.set(.75);
+    //   index2.set(.75); 
+    // } else if(time1.get()>1.2 && time1.get()<4.9){
+    //   index1.stopMotor();
+    //   index2.stopMotor();
+    // }else if(time1.get() >6.5 && time1.get()<10.5) {
+    //   index1.set(.75);
+    //   index2.set(.75);
+    // }
+    // end of begining left side autonomus code
+
+
+    // // beggining of right side auton
+
+    // if (time1.get() < 2) {
+    //   index1.set(1);
+    //   index2.set(1);
+    // }
+    // if (time1.get() > 3.5 && time1.get() < 4){
+    //   leftFlywheel.set(.5);
+    //   rightFlywheel.set(.5);
+    // }
+    // if (time1.get() > 7 && autonSwitch == false && time1.get() < 10){
+    //   autonSwitch = true;
+    //   m_rightAutoCommand1.schedule();
+    // }
+    // if (time1.get() > 10.5 && autonSwitch == true){
+    //   autonSwitch = false;
+    //   m_rightAutoCommand2.schedule();
+    // }
   }
-}
+// }
     
     
 
@@ -248,11 +246,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if (laserBreak.get() == true) {
-      rainbowLed();
-    } else {
-      redLed(); 
-    }
     SmartDashboard.putNumber("matchtime", time2.get());
     s1.set(hangToggle);
     s2.set(hangToggle);
@@ -261,7 +254,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
       new WaitCommand(.2);
     }
     if (operator.getRawButton(XboxController.Button.kLeftBumper.value) && hangToggle == true) {
-      hangToggle = true;
+      hangToggle = false;
       new WaitCommand(.2);
     }
     if (driver.getRawButton(PS4Controller.Button.kL1.value)) {
