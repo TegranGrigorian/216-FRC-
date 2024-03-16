@@ -159,6 +159,15 @@ import org.opencv.imgproc.Imgproc;
    
    led1.setData(led1Buffer);
   }
+    private void lightPinkLed() {
+    for (var i = 0; i < led1Buffer.getLength(); i++) {
+      // led1Buffer.setHSV(i, 0, 100, 100);
+      led1Buffer.setLED(i,Color.kDeepPink);
+    }
+   
+   led1.setData(led1Buffer);
+  }
+
   
   @Override
   public void robotInit() {
@@ -173,44 +182,6 @@ import org.opencv.imgproc.Imgproc;
    
     led1.setData(led1Buffer);
     led1.start();
-    
-    // m_visionThread =
-    //     new Thread(
-    //         () -> {
-    //           // Get the UsbCamera from CameraServer
-    //           UsbCamera camera = CameraServer.startAutomaticCapture();
-    //           // Set the resolution
-    //           camera.setResolution(640, 480);
-
-    //           // Get a CvSink. This will capture Mats from the camera
-    //           CvSink cvSink = CameraServer.getVideo();
-    //           // Setup a CvSource. This will send images back to the Dashboard
-    //           CvSource outputStream = CameraServer.putVideo("Rectangle", 640, 480);
-
-    //           // Mats are very memory expensive. Lets reuse this Mat.
-    //           Mat mat = new Mat();
-
-    //           // This cannot be 'true'. The program will never exit if it is. This
-    //           // lets the robot stop this thread when restarting robot code or
-    //           // deploying.
-    //           while (!Thread.interrupted()) {
-    //             // Tell the CvSink to grab a frame from the camera and put it
-    //             // in the source mat.  If there is an error notify the output.
-    //             if (cvSink.grabFrame(mat) == 0) {
-    //               // Send the output the error.
-    //               outputStream.notifyError(cvSink.getError());
-    //               // skip the rest of the current iteration
-    //               continue;
-    //             }
-    //             // Put a rectangle on the image
-    //             Imgproc.rectangle(
-    //                 mat, new Point(100, 100), new Point(400, 400), new Scalar(255, 255, 255), 5);
-    //             // Give the output stream a new image to display
-    //             outputStream.putFrame(mat);
-    //           }
-    //         });
-    // m_visionThread.setDaemon(true);
-    // m_visionThread.start();
   }
   
   /**
@@ -258,8 +229,8 @@ import org.opencv.imgproc.Imgproc;
     leftFlywheel.set(.8);
     rightFlywheel.set(.8);
     new WaitCommand(3);
-    // intake1.set(-1);
-    // intake2.set(-1);
+    intake1.set(1);
+    intake2.set(1);
     
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_midAutonCommand = m_robotContainer.midAutonCommand();
@@ -284,28 +255,28 @@ import org.opencv.imgproc.Imgproc;
   public void autonomousPeriodic() {
     // if (m_robotContainer.m_chooser.getSelected() == m_midAutonCommand) {
         //Beginning Mid autonomous code
-      // if (time1.get() > .7 && time1.get() < 1.2) {
-      //   index1.set(1);
-      //   index2.set(1); 
-      // }
-      // if (time1.get() > 1.5 && time1.get() < 2.5){
-      //   index1.stopMotor();
-      //   index2.stopMotor();
+      if (time1.get() > .7 && time1.get() < 1.2) {
+        index1.set(1);
+        index2.set(1); 
+      }
+      if (time1.get() > 1.5 && time1.get() < 2.5){
+        index1.stopMotor();
+        index2.stopMotor();
         
-      // }
-      // else if (time1.get() > 4.5 && time1.get() < 5.5){
-      //   index1.set(1);
-      //   index2.set(1);
-      // } 
-      // else if (time1.get() > 5.8 && time1.get() < 8) {
-      //   leftFlywheel.stopMotor();
-      //   rightFlywheel.stopMotor();
-      //   index1.stopMotor();
-      //   index2.stopMotor();
-      //   intake1.stopMotor();
-      //   intake2.stopMotor();
-      // }
-    // }
+      }
+      else if (time1.get() > 4.5 && time1.get() < 5.5){
+        index1.set(1);
+        index2.set(1);
+      } 
+      else if (time1.get() > 5.8 && time1.get() < 8) {
+        leftFlywheel.stopMotor();
+        rightFlywheel.stopMotor();
+        index1.stopMotor();
+        index2.stopMotor();
+        intake1.stopMotor();
+        intake2.stopMotor();
+      }
+    }
     
     // if (m_robotContainer.m_chooser.getSelected() == m_autonomousCommand) {
       // begining left side Autonomus code
@@ -323,36 +294,35 @@ import org.opencv.imgproc.Imgproc;
     // }
     //if (m_robotContainer.m_chooser.getSelected() == m_rightAutoCommand0) {
       // // beggining of right side auton
-    if (time1.get() > .5 && time1.get() < 1.2) {
-      index1.set(1);
-      index2.set(1); 
-    }
-    if (time1.get() > 1.7 && time1.get() < 2.5){
-      index1.stopMotor();
-      index2.stopMotor();
+    // if (time1.get() > .5 && time1.get() < 1.2) {
+    //   index1.set(1);
+    //   index2.set(1); 
+    // }
+    // if (time1.get() > 1.7 && time1.get() < 2.5){
+    //   index1.stopMotor();
+    //   index2.stopMotor();
       
-    }
-    if (time1.get() > 3.5 && time1.get() < 4){
-      leftFlywheel.set(-.5);
-      rightFlywheel.set(-.5);
-    }
-    if (time1.get() > 7 && autonSwitch == false && time1.get() < 10){
-      autonSwitch = true;
-      m_rightAutoCommand1.schedule();
-    }
-    if (time1.get() > 10.5 && autonSwitch == true){
-      autonSwitch = false;
-      m_rightAutoCommand2.schedule();
-    }
+    // }
+    // if (time1.get() > 3.5 && time1.get() < 4){
+    //   leftFlywheel.set(-.5);
+    //   rightFlywheel.set(-.5);
+    // }
+    // if (time1.get() > 7 && autonSwitch == false && time1.get() < 10){
+    //   autonSwitch = true;
+    //   m_rightAutoCommand1.schedule();
+    // }
+    // if (time1.get() > 10.5 && autonSwitch == true){
+    //   autonSwitch = false;
+    //   m_rightAutoCommand2.schedule();
+    // }
     //}
     
-  }
     
 
   @Override
   public void teleopInit() {
     led1.start();
-
+    lightPinkLed();
     //purpleLed();
 
     // This makes sure that the autonomous stops running when
@@ -366,6 +336,7 @@ import org.opencv.imgproc.Imgproc;
       
     }
     time2.start();
+    led1.setData(led1Buffer);
   }
 
   /** This function is called periodically during operator control. */
@@ -374,6 +345,9 @@ import org.opencv.imgproc.Imgproc;
     SmartDashboard.putNumber("matchtime", time2.get());
     s1.set(hangToggle);
     s2.set(hangToggle);
+    if (time2.get() == 105) {
+      redLed();
+    }
     if (driver.getRawButton(PS4Controller.Button.kCross.value) && ledSwitch == true) {
       orangeLed();
       ledSwitch = false;
@@ -405,11 +379,11 @@ import org.opencv.imgproc.Imgproc;
       index2.stopMotor();
     }
     if (driver.getRawAxis(PS4Controller.Axis.kL2.value) > .1) {
-      intake1.set(1);
-      intake2.set(1);
-    } else if (driver.getRawAxis(PS4Controller.Axis.kR2.value) > .1) {
       intake1.set(-1);
       intake2.set(-1);
+    } else if (driver.getRawAxis(PS4Controller.Axis.kR2.value) > .1) {
+      intake1.set(1);
+      intake2.set(1);
     }
     else {
       intake1.stopMotor();
