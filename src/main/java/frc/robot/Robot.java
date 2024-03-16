@@ -32,24 +32,12 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Solenoid;
 //camera code
-import edu.wpi.first.cscore.CvSink;
-import edu.wpi.first.cscore.CvSource;
-import edu.wpi.first.cscore.MjpegServer;
-import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.cameraserver.CameraServer;
 
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.CvSink;
-import edu.wpi.first.cscore.CvSource;
-import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.TimedRobot;
+
 
 import java.util.Optional;
 
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
