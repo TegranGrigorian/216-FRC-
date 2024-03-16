@@ -80,6 +80,7 @@ import java.util.Optional;
   private final Joystick driver = new Joystick(0);
   Thread m_visionThread;
   boolean ledSwitch = false;
+  Optional<Alliance> ally = DriverStation.getAlliance();
   //camera code
   
   // private final JoystickButton flywheelOn = new JoystickButton(operator,XboxController.Button.kA.value);
@@ -250,11 +251,18 @@ import java.util.Optional;
       if (time1.get() > 1.5 && time1.get() < 2.5){
         index1.stopMotor();
         index2.stopMotor();
+        leftFlywheel.set(-.4);
+        rightFlywheel.set(-.4);
         
+      } else if (time1.get() > 3.9 && time1.get() < 4.4) {
+        leftFlywheel.set(.8);
+        rightFlywheel.set(.8);
       }
       else if (time1.get() > 4.5 && time1.get() < 5.5){
         index1.set(1);
         index2.set(1);
+        leftFlywheel.set(.8);
+        rightFlywheel.set(.8);
       } 
       else if (time1.get() > 5.8 && time1.get() < 8) {
         leftFlywheel.stopMotor();
@@ -325,7 +333,16 @@ import java.util.Optional;
     }
     time2.start();
     led1.setData(led1Buffer);
+    time2.reset();
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    if (ally.get() == Alliance.Red) {
+      redLed();
+    }
+    if (ally.get() == Alliance.Blue) {
+      blueLed();
+    }
   }
+  
 
   /** This function is called periodically during operator control. */
   @Override
@@ -333,17 +350,23 @@ import java.util.Optional;
     SmartDashboard.putNumber("matchtime", time2.get());
     s1.set(hangToggle);
     s2.set(hangToggle);
-    if (time2.get() == 105) {
+    if (time2.get() > 105) {
       redLed();
     }
-    if (driver.getRawButton(PS4Controller.Button.kCross.value) && ledSwitch == true) {
+    if (operator.getRawButton(XboxController.Button.kStart.value) && time2.get() < 105) {
       orangeLed();
       ledSwitch = false;
-
     }
-    if (driver.getRawButton(PS4Controller.Button.kCircle.value) && ledSwitch == false) {
+    if (operator.getRawButton(XboxController.Button.kBack.value)  && time2.get() < 105) {
       purpleLed();
       ledSwitch = true;
+    }
+    if ((operator.getRawButton(XboxController.Button.kX.value) && time2.get() < 105)){
+      if (ally.get() == Alliance.Blue) {
+        blueLed();
+      } {if (ally.get() == Alliance.Red)
+        redLed();
+      }
     }
     if (operator.getRawButton(XboxController.Button.kRightBumper.value) && hangToggle == false) {
       hangToggle = true;
@@ -387,11 +410,11 @@ import java.util.Optional;
     } else if (operator.getRawButton(XboxController.Button.kY.value)){
       leftFlywheel.set(.08);
       rightFlywheel.set(.20);
-    } else if (operator.getRawButton(XboxController.Button.kX.value)){
-      leftFlywheel.set(.05);
-      rightFlywheel.set(.05);
-    }
-    else { 
+    // } else if (operator.getRawButton(XboxController.Button.kX.value)){
+    //   leftFlywheel.set(.05);
+    //   rightFlywheel.set(.05);
+    // }
+    } else { 
 
       leftFlywheel.stopMotor();
       rightFlywheel.stopMotor();
