@@ -397,8 +397,8 @@ import org.opencv.imgproc.Imgproc;
       rightFlywheel.set(-.4);
   
     } else if (operator.getRawButton(XboxController.Button.kY.value)){
-      leftFlywheel.set(.15);
-      rightFlywheel.set(.32);
+      leftFlywheel.set(.08);
+      rightFlywheel.set(.20);
     } else if (operator.getRawButton(XboxController.Button.kX.value)){
       leftFlywheel.set(.05);
       rightFlywheel.set(.05);
