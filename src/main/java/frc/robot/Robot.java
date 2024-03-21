@@ -381,6 +381,7 @@ import edu.wpi.first.wpilibj.Encoder;
       redLed();
     } else if (encoder.getDistance() > 480) {
       purpleLed();
+      operator.setRumble(RumbleType.kBothRumble, .5);
     } else if ((encoder.getDistance() > 90 && encoder.getDistance() < 120) && kobeMode) {
       cyanLed();
     } else if (time2.get() > 120) {
@@ -405,7 +406,6 @@ import edu.wpi.first.wpilibj.Encoder;
           ampMode = true;
         }
       } else {
-        operator.setRumble(RumbleType.kBothRumble, .5);
         if (encoder.getDistance() > 0) {
           leftArm.set(1);
           rightArm.set(-1);
