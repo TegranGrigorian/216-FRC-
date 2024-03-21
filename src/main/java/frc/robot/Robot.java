@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.HIDType;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 // import edu.wpi.first.wpilibj.motorcontrol.Talon;
@@ -18,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 // import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.autos.midauto2;
+
 //motor and external libraries
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -40,6 +44,9 @@ import edu.wpi.first.cameraserver.CameraServer;
 
 
 import java.util.Optional;
+
+import javax.management.loading.PrivateClassLoader;
+
 import edu.wpi.first.wpilibj.Encoder;
 
 
@@ -80,13 +87,16 @@ import edu.wpi.first.wpilibj.Encoder;
   private Command m_rightAutoCommand0;
   private Command m_rightAutoCommand1;
   private Command m_rightAutoCommand2;
+  private Command m_midAutonCommand2;
   private final Joystick operator = new Joystick(1);
   private final Joystick driver = new Joystick(0);
   Thread m_visionThread;
   boolean ledSwitch = false;
   Optional<Alliance> ally = DriverStation.getAlliance();
   boolean ampMode = false;
+  boolean kobeMode = false;
   Timer taylorTimer = new Timer();
+  Timer hangTime = new Timer();
 
   //encoder poop 
 
@@ -103,6 +113,7 @@ import edu.wpi.first.wpilibj.Encoder;
    */
 
    //led poop 
+
     private void orangeLed() {
       for (var i = 0; i < led1Buffer.getLength(); i++) {
       led1Buffer.setLED(i,Color.kOrange);
@@ -115,7 +126,6 @@ import edu.wpi.first.wpilibj.Encoder;
       // led1Buffer.setHSV(i, 0, 100, 100);
       led1Buffer.setLED(i,Color.kPurple);
     }
-   
    led1.setData(led1Buffer);
   }
   
@@ -142,16 +152,15 @@ import edu.wpi.first.wpilibj.Encoder;
     for (var i = 0; i < led1Buffer.getLength(); i++) {
       // Calculate the hue - hue is easier for rainbows because the color
       // shape is a circle so only one value needs to precess
-      final var hue = (m_rainbowFirstPixelHue + (i * 180 / led1Buffer.getLength())) % 180;
+      final var hue = (m_rainbowFirstPixelHue + (i * 180  / led1Buffer.getLength())) % 180;
       // Set the value
       led1Buffer.setHSV(i, hue, 255, 128);
     // m_rainbowFirstPixelHue =  i /2;
     }
     // Increase by to make the rainbow "move"
-    m_rainbowFirstPixelHue += 10000;
+    m_rainbowFirstPixelHue += 300000000;
     // Check bounds
-    m_rainbowFirstPixelHue %= 180;
-    led1.setData(led1Buffer);
+    m_rainbowFirstPixelHue %= 18;
   }
   private void greenLed() {
       for (var i = 0; i < led1Buffer.getLength(); i++) {
@@ -180,7 +189,11 @@ import edu.wpi.first.wpilibj.Encoder;
   }
   led1.setData(led1Buffer);
   }
-  
+  private void cyanLed() {
+    for (var i = 0; i < led1Buffer.getLength(); i++) {
+    led1Buffer.setLED(i,Color.kCyan);
+  }
+  }
   
 
   @Override
@@ -224,7 +237,7 @@ import edu.wpi.first.wpilibj.Encoder;
 
   @Override
   public void disabledPeriodic() {
-    rainbow();
+    //rainbow();
     led1.setData(led1Buffer);
   }
 
@@ -243,14 +256,13 @@ import edu.wpi.first.wpilibj.Encoder;
     leftFlywheel.set(.8);
     rightFlywheel.set(.8);
     new WaitCommand(3);
-    intake1.set(1);
-    intake2.set(1);
     
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_midAutonCommand = m_robotContainer.midAutonCommand();
     m_rightAutoCommand0 = m_robotContainer.rightAutoCommand0();
     m_rightAutoCommand1 = m_robotContainer.rightautoCommand1();
     m_rightAutoCommand2 = m_robotContainer.rightAutoCommand2();
+    m_midAutonCommand2 = m_robotContainer.midAutonCommand2();
     // schedule the autonomous command (example)
 
     if (m_autonomousCommand != null) {
@@ -268,8 +280,8 @@ import edu.wpi.first.wpilibj.Encoder;
       if (time1.get() > .7 && time1.get() < 1.3) {
         index1.set(1);
         index2.set(1); 
-        intake1.set(1);
-        intake2.set(1);
+        intake1.set(-1);
+        intake2.set(-1);
       }
       if (time1.get() > 1.3 && time1.get() < 2.5){
         index1.set(-.2);
@@ -289,13 +301,14 @@ import edu.wpi.first.wpilibj.Encoder;
         leftFlywheel.set(.8);
         rightFlywheel.set(.8);
       } 
-      else if (time1.get() > 6 && time1.get() < 8) {
-        leftFlywheel.stopMotor();
-        rightFlywheel.stopMotor();
-        index1.set(-1);
-        index2.set(-1);
-        intake1.set(-1);
-        intake2.set(-1);
+      else if (time1.get() > 6 && time1.get() < 6.4) {
+        index1.set(-.3);
+        index2.set(-.3);
+      } else if (time1.get() > 6.5 && time1.get() < 7.0) {
+        m_midAutonCommand2.schedule();
+      } else if (time1.get() > 11.8 && time1.get() < 12.3) {
+        index1.set(1);
+        index2.set(1);
       }
     }
     
@@ -367,8 +380,9 @@ import edu.wpi.first.wpilibj.Encoder;
     if (driver.getRawButton(PS4Controller.Button.kL1.value)) {
       redLed();
     } else if (encoder.getDistance() > 480) {
-      hsv0();
       purpleLed();
+    } else if ((encoder.getDistance() > 90 && encoder.getDistance() < 120) && kobeMode) {
+      cyanLed();
     } else if (time2.get() > 120) {
       rainbow();
     }else {
@@ -385,11 +399,13 @@ import edu.wpi.first.wpilibj.Encoder;
         } else {
           leftArm.stopMotor();
           rightArm.stopMotor();
-          taylorTimer.start();          
+          taylorTimer.start();  
+                  
           //blueLed();
           ampMode = true;
         }
       } else {
+        operator.setRumble(RumbleType.kBothRumble, .5);
         if (encoder.getDistance() > 0) {
           leftArm.set(1);
           rightArm.set(-1);
@@ -399,6 +415,32 @@ import edu.wpi.first.wpilibj.Encoder;
           leftArm.stopMotor();
           rightArm.stopMotor();
           ampMode = false;
+        }
+      }
+    }else if (operator.getRawButton(XboxController.Button.kStart.value)) {
+      if (kobeMode == false) {
+        if (encoder.getDistance() < 100) {
+          leftArm.set(-.15);
+          rightArm.set(.15);
+          taylorTimer.reset();
+          taylorTimer.stop();
+        } else {
+          leftArm.stopMotor();
+          rightArm.stopMotor();
+          taylorTimer.start();          
+          //blueLed();
+          kobeMode = true;
+        }
+      } else {
+        if (encoder.getDistance() > 0) {
+          leftArm.set(.15);
+          rightArm.set(-.15);
+          taylorTimer.reset();
+          taylorTimer.stop();
+        } if (encoder.getDistance() < 0) {
+          leftArm.stopMotor();
+          rightArm.stopMotor();
+          kobeMode = false;
         }
       }
     } else if (operator.getRawAxis(XboxController.Axis.kLeftTrigger.value) > .1) {
@@ -412,13 +454,11 @@ import edu.wpi.first.wpilibj.Encoder;
       rightArm.stopMotor();
     }
       
-    if (operator.getRawButton(XboxController.Button.kRightBumper.value) && hangToggle == false) {
+    if (operator.getRawButton(XboxController.Button.kLeftBumper.value) && hangToggle == false) {
       hangToggle = true;
-      new WaitCommand(.2);
-    }
-    if (operator.getRawButton(XboxController.Button.kLeftBumper.value) && hangToggle == true) {
+      hangTime.start();
+    } if (driver.getRawButton(PS4Controller.Button.kSquare.value)){
       hangToggle = false;
-      new WaitCommand(.2);
     }
     if (driver.getRawAxis(PS4Controller.Axis.kL2.value) > .1) {
       index1.set(-.75);
@@ -436,7 +476,7 @@ import edu.wpi.first.wpilibj.Encoder;
     if (driver.getRawButton(PS4Controller.Button.kCircle.value)) {
       intake1.set(1);
       intake2.set(1);
-    } else if (driver.getRawButton(PS4Controller.Button.kR1.value)) {
+    } else if (driver.getRawButton(PS4Controller.Button.kR1.value) && (encoder.getDistance() > -100 && encoder.getDistance() < 100)) {
       intake1.set(-1);
       intake2.set(-1);
     }

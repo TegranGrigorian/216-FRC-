@@ -84,6 +84,12 @@ public class RobotContainer {
     public Command midAutonCommand(){
         return new midauto(s_Swerve);
     }
+    public Command midAutonCommand2() {
+        return new midauto2(s_Swerve);
+    } 
+    public Command midAutonCommand3() {
+        return new midauto3(s_Swerve);
+    }
     public Command rightAutoCommand0(){
         return new rightsideauto(s_Swerve);
     }
