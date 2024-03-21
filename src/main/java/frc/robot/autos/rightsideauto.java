@@ -35,11 +35,6 @@ public class rightsideauto extends SequentialCommandGroup {
                 // End 3 meters straight ahead of where we started, facing forward
                 new Pose2d(5, 5, new Rotation2d(45)),
                 config);
-        Trajectory traj1 = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(0,0, new Rotation2d(0)), 
-            List.of(new Translation2d(1,-1.5), 
-            new Translation2d(1,-1.5)),
-            new Pose2d(1,-1.5, new Rotation2d(0)), config);
         var thetaController =
             new ProfiledPIDController(
                 Constants.AutoConstants.kPThetaController, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
@@ -55,17 +50,6 @@ public class rightsideauto extends SequentialCommandGroup {
                 thetaController,
                 s_Swerve::setModuleStates,
                 s_Swerve);
-SwerveControllerCommand swerveControlCommand1 =
-            new SwerveControllerCommand(
-                traj1,
-                s_Swerve::getPose,
-                Constants.Swerve.swerveKinematics,
-                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
-                thetaController,
-                s_Swerve::setModuleStates,
-                s_Swerve);
-
         addCommands(
             new InstantCommand(() -> s_Swerve.setPose(exampleTrajectory.getInitialPose())),
             swerveControllerCommand

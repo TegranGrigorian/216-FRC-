@@ -21,22 +21,26 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 //motor and external libraries
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.fasterxml.jackson.databind.cfg.EnumFeature;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 // import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.util.Color;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Solenoid;
 //camera code
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
 import edu.wpi.first.cameraserver.CameraServer;
 
 
 import java.util.Optional;
+import edu.wpi.first.wpilibj.Encoder;
 
 
 /**
@@ -48,9 +52,8 @@ import java.util.Optional;
 
  public class Robot extends TimedRobot {
 //Pneumatic Code
-  // AddressableLED led1 = new AddressableLED(5); // led object
-  // AddressableLEDBuffer led1Buffer = new AddressableLEDBuffer(1000);
-  CameraServer server;
+  AddressableLED led1 = new AddressableLED(5); // led object
+  AddressableLEDBuffer led1Buffer = new AddressableLEDBuffer(1000);
   private final Compressor m_compressor = new Compressor(PneumaticsModuleType.CTREPCM);
   private final Solenoid s1 = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
   private final Solenoid s2 = new Solenoid(PneumaticsModuleType.CTREPCM,7);
@@ -69,18 +72,26 @@ import java.util.Optional;
   //private final Joystick driver = new Joystick(0);
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
 
+
+  //adressable leds
   private Command m_autonomousCommand;
   private Command m_midAutonCommand;
   private RobotContainer m_robotContainer;
   private Command m_rightAutoCommand0;
   private Command m_rightAutoCommand1;
   private Command m_rightAutoCommand2;
-  
   private final Joystick operator = new Joystick(1);
   private final Joystick driver = new Joystick(0);
   Thread m_visionThread;
   boolean ledSwitch = false;
   Optional<Alliance> ally = DriverStation.getAlliance();
+  boolean ampMode = false;
+  Timer taylorTimer = new Timer();
+
+  //encoder poop 
+
+  Encoder encoder = new Encoder(0, 1);
+
   //camera code
   
   // private final JoystickButton flywheelOn = new JoystickButton(operator,XboxController.Button.kA.value);
@@ -90,74 +101,88 @@ import java.util.Optional;
    * This function is run when the robot is first started up and shoulutd be used for any
    * initialization code.
    */
-  // private void orangeLed() {
-  //   for (var i = 0; i < led1Buffer.getLength(); i++) {
-  //     led1Buffer.setLED(i,Color.kOrange);
-  //   }
-  //   led1.setData(led1Buffer);
 
-  // }
-  // private void purpleLed() {
-  //   for (var i = 0; i < led1Buffer.getLength(); i++) {
-  //     // led1Buffer.setHSV(i, 0, 100, 100);
-  //     led1Buffer.setLED(i,Color.kPurple);
-  //   }
+   //led poop 
+    private void orangeLed() {
+      for (var i = 0; i < led1Buffer.getLength(); i++) {
+      led1Buffer.setLED(i,Color.kOrange);
+      }
+      led1.setData(led1Buffer);
+
+  }
+  private void purpleLed() {
+    for (var i = 0; i < led1Buffer.getLength(); i++) {
+      // led1Buffer.setHSV(i, 0, 100, 100);
+      led1Buffer.setLED(i,Color.kPurple);
+    }
    
-  //  led1.setData(led1Buffer);
-  // }
+   led1.setData(led1Buffer);
+  }
   
-  // private void redLed() {
-  //   for (var i = 0; i < led1Buffer.getLength(); i++) {
-  //     // led1Buffer.setHSV(i, 0, 100, 100);
-  //     led1Buffer.setLED(i,Color.kRed);
-  //   }
+  private void redLed() {
+    for (var i = 0; i < led1Buffer.getLength(); i++) {
+      // led1Buffer.setHSV(i, 0, 100, 100);
+      led1Buffer.setLED(i,Color.kRed);
+    }
    
-  //  led1.setData(led1Buffer);
-  // }
+   led1.setData(led1Buffer);
+  }
 
-  // private void blueLed() {
-  //   for (var i = 0; i < led1Buffer.getLength(); i++) {
-  //   // led1Buffer.setHSV(i, 0, 100, 100);
-  //   led1Buffer.setLED(i,Color.kBlue);
-  // }
-  // led1.setData(led1Buffer);
-  // }
+  private void blueLed() {
+    for (var i = 0; i < led1Buffer.getLength(); i++) {
+    // led1Buffer.setHSV(i, 0, 100, 100);
+    led1Buffer.setLED(i,Color.kBlue);
+  }
+  led1.setData(led1Buffer);
+  }
 
-  // private void rainbow() {
-  //   // For every pixel
-  //   int m_rainbowFirstPixelHue = 0;
-  //   for (var i = 0; i < led1Buffer.getLength(); i++) {
-  //     // Calculate the hue - hue is easier for rainbows because the color
-  //     // shape is a circle so only one value needs to precess
-  //     final var hue = (m_rainbowFirstPixelHue + (i * 180 / led1Buffer.getLength())) % 180;
-  //     // Set the value
-  //     led1Buffer.setHSV(i, hue, 255, 128);
-  //   // m_rainbowFirstPixelHue =  i /2;
-  //   }
-  //   // Increase by to make the rainbow "move"
-  //   m_rainbowFirstPixelHue += 3;
-  //   // Check bounds
-  //   m_rainbowFirstPixelHue %= 180;
-  //   led1.setData(led1Buffer);
-  // }
-  // private void greenLed() {
-  //     for (var i = 0; i < led1Buffer.getLength(); i++) {
-  //     // led1Buffer.setHSV(i, 0, 100, 100);
-  //     led1Buffer.setLED(i,Color.kGreen);
-  //   }
+  private void rainbow() {
+    // For every pixel
+    int m_rainbowFirstPixelHue = 0;
+    for (var i = 0; i < led1Buffer.getLength(); i++) {
+      // Calculate the hue - hue is easier for rainbows because the color
+      // shape is a circle so only one value needs to precess
+      final var hue = (m_rainbowFirstPixelHue + (i * 180 / led1Buffer.getLength())) % 180;
+      // Set the value
+      led1Buffer.setHSV(i, hue, 255, 128);
+    // m_rainbowFirstPixelHue =  i /2;
+    }
+    // Increase by to make the rainbow "move"
+    m_rainbowFirstPixelHue += 10000;
+    // Check bounds
+    m_rainbowFirstPixelHue %= 180;
+    led1.setData(led1Buffer);
+  }
+  private void greenLed() {
+      for (var i = 0; i < led1Buffer.getLength(); i++) {
+      // led1Buffer.setHSV(i, 0, 100, 100);
+      led1Buffer.setLED(i,Color.kGreen);
+    }
    
-  //  led1.setData(led1Buffer);
-  // }
-  //   private void lightPinkLed() {
-  //   for (var i = 0; i < led1Buffer.getLength(); i++) {
-  //     // led1Buffer.setHSV(i, 0, 100, 100);
-  //     led1Buffer.setLED(i,Color.kDeepPink);
-  //   }
+   led1.setData(led1Buffer);
+  }
+    private void lightPinkLed() {
+    for (var i = 0; i < led1Buffer.getLength(); i++) {
+      // led1Buffer.setHSV(i, 0, 100, 100);
+      led1Buffer.setLED(i,Color.kDeepPink);
+    }
    
-  //  led1.setData(led1Buffer);
-  // }
-
+   led1.setData(led1Buffer);
+  }
+  private void off() {
+  for (var i = 0; i < led1Buffer.getLength(); i++) {
+    led1Buffer.setLED(i,Color.kBlack);
+  }
+  }
+  private void hsv0() {
+  for (var i = 0; i < led1Buffer.getLength(); i++) {
+    led1Buffer.setLED(i,Color.kBlack);
+  }
+  led1.setData(led1Buffer);
+  }
   
+  
+
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -165,12 +190,12 @@ import java.util.Optional;
     CameraServer.startAutomaticCapture("camera", 0);
     m_robotContainer = new RobotContainer();
     m_compressor.enableDigital();
-    // led1.setLength(led1Buffer.getLength());
+    led1.setLength(led1Buffer.getLength());
     //LED Code
     //send led data
-   
-    // led1.setData(led1Buffer);
-    // led1.start();
+    encoder.reset();
+    led1.setData(led1Buffer);
+    led1.start();
   }
   
   /**
@@ -187,8 +212,8 @@ import java.util.Optional;
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    // led1.setData(led1Buffer);
-
+    
+    SmartDashboard.putNumber("Encoder Distance",encoder.getDistance());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -199,21 +224,21 @@ import java.util.Optional;
 
   @Override
   public void disabledPeriodic() {
-    // rainbow();
-    // led1.setData(led1Buffer);
-    
+    rainbow();
+    led1.setData(led1Buffer);
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    // Optional<Alliance> ally = DriverStation.getAlliance();
-    // if (ally.get() == Alliance.Red) {
-    //   redLed();
-    // }
-    // if (ally.get() == Alliance.Blue) {
-    //   blueLed();
-    // }
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    if (ally.get() == Alliance.Red) {
+      redLed();
+    }
+    if (ally.get() == Alliance.Blue) {
+      blueLed();
+    }
+
     time1.start();
     leftFlywheel.set(.8);
     rightFlywheel.set(.8);
@@ -228,9 +253,10 @@ import java.util.Optional;
     m_rightAutoCommand2 = m_robotContainer.rightAutoCommand2();
     // schedule the autonomous command (example)
 
-    // if (m_autonomousCommand != null) {
-    //   m_autonomousCommand.schedule(); //left side autonomous command
-    // }    
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule(); //left side autonomous command
+      
+    }    
   
   }
 
@@ -239,36 +265,38 @@ import java.util.Optional;
   public void autonomousPeriodic() {
     // if (m_robotContainer.m_chooser.getSelected() == m_midAutonCommand) {
         //Beginning Mid autonomous code
-      if (time1.get() > .7 && time1.get() < 15) {
+      if (time1.get() > .7 && time1.get() < 1.3) {
         index1.set(1);
         index2.set(1); 
         intake1.set(1);
         intake2.set(1);
       }
-      // if (time1.get() > 1.5 && time1.get() < 2.5){
-      //   index1.stopMotor();
-      //   index2.stopMotor();
-      //   leftFlywheel.set(-.4);
-      //   rightFlywheel.set(-.4);
+      if (time1.get() > 1.3 && time1.get() < 2.5){
+        index1.set(-.2);
+        index2.set(-.2);
+        leftFlywheel.set(-.4);
+        rightFlywheel.set(-.4);
         
-      // } else if (time1.get() > 3.9 && time1.get() < 4.4) {
-      //   leftFlywheel.set(.8);
-      //   rightFlywheel.set(.8);
-      // }
-      // else if (time1.get() > 4.5 && time1.get() < 5.5){
-      //   index1.set(1);
-      //   index2.set(1);
-      //   leftFlywheel.set(.8);
-      //   rightFlywheel.set(.8);
-      // } 
-      // else if (time1.get() > 5.8 && time1.get() < 8) {
-      //   leftFlywheel.stopMotor();
-      //   rightFlywheel.stopMotor();
-      //   index1.stopMotor();
-      //   index2.stopMotor();
-      //   intake1.stopMotor();
-      //   intake2.stopMotor();
-      // }
+      } else if (time1.get() > 3.9 && time1.get() < 4.4) {
+        // intake1.set(.4);
+        // intake2.set(.4);
+        leftFlywheel.set(.8);
+        rightFlywheel.set(.8);
+      }
+      else if (time1.get() > 4.7 && time1.get() < 5.5){
+        index1.set(1);
+        index2.set(1);
+        leftFlywheel.set(.8);
+        rightFlywheel.set(.8);
+      } 
+      else if (time1.get() > 6 && time1.get() < 8) {
+        leftFlywheel.stopMotor();
+        rightFlywheel.stopMotor();
+        index1.set(-1);
+        index2.set(-1);
+        intake1.set(-1);
+        intake2.set(-1);
+      }
     }
     
     // if (m_robotContainer.m_chooser.getSelected() == m_autonomousCommand) {
@@ -314,10 +342,6 @@ import java.util.Optional;
 
   @Override
   public void teleopInit() {
-    // led1.start();
-    // lightPinkLed();
-    //purpleLed();
-
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -328,15 +352,8 @@ import java.util.Optional;
       m_autonomousCommand.cancel();
     }
     time2.start();
-    // led1.setData(led1Buffer);
     time2.reset();
-    // Optional<Alliance> ally = DriverStation.getAlliance();
-    // if (ally.get() == Alliance.Red) {
-    //   redLed();
-    // }
-    // if (ally.get() == Alliance.Blue) {
-    //   blueLed();
-    // }
+
   }
   
 
@@ -344,26 +361,57 @@ import java.util.Optional;
   @Override
   public void teleopPeriodic() {
     SmartDashboard.putNumber("matchtime", time2.get());
+    SmartDashboard.putNumber("Taylor timer 😎", taylorTimer.get());
     s1.set(hangToggle);
     s2.set(hangToggle);
-    // if (time2.get() > 105) {
-    //   rainbow();
-    // }
-    // if (operator.getRawButton(XboxController.Button.kStart.value) && time2.get() < 105) {
-    //   orangeLed();
-    //   ledSwitch = false;
-    // }
-    // if (operator.getRawButton(XboxController.Button.kBack.value)  && time2.get() < 105) {
-    //   purpleLed();
-    //   ledSwitch = true;
-    // }
-    // if ((operator.getRawButton(XboxController.Button.kX.value) && time2.get() < 105)){
-    //   if (ally.get() == Alliance.Blue) {
-    //     blueLed();
-    //   } {if (ally.get() == Alliance.Red)
-    //     redLed();
-    //   }
-    // }
+    if (driver.getRawButton(PS4Controller.Button.kL1.value)) {
+      redLed();
+    } else if (encoder.getDistance() > 480) {
+      hsv0();
+      purpleLed();
+    } else if (time2.get() > 120) {
+      rainbow();
+    }else {
+      off();
+    }
+
+    if (operator.getRawButton(XboxController.Button.kX.value)) {
+      if (ampMode == false) {
+        if (encoder.getDistance() < 484.25) {
+          leftArm.set(-1);
+          rightArm.set(1);
+          taylorTimer.reset();
+          taylorTimer.stop();
+        } else {
+          leftArm.stopMotor();
+          rightArm.stopMotor();
+          taylorTimer.start();          
+          //blueLed();
+          ampMode = true;
+        }
+      } else {
+        if (encoder.getDistance() > 0) {
+          leftArm.set(1);
+          rightArm.set(-1);
+          taylorTimer.reset();
+          taylorTimer.stop();
+        } if (encoder.getDistance() < 0) {
+          leftArm.stopMotor();
+          rightArm.stopMotor();
+          ampMode = false;
+        }
+      }
+    } else if (operator.getRawAxis(XboxController.Axis.kLeftTrigger.value) > .1) {
+      leftArm.set(operator.getRawAxis(XboxController.Axis.kLeftTrigger.value)*.6);
+      rightArm.set(-operator.getRawAxis(XboxController.Axis.kLeftTrigger.value)*.6);
+    } else if (operator.getRawAxis(XboxController.Axis.kRightTrigger.value) > .1) {
+      leftArm.set(-operator.getRawAxis(XboxController.Axis.kRightTrigger.value)*.6);
+      rightArm.set(operator.getRawAxis(XboxController.Axis.kRightTrigger.value)*.6);
+    } else { 
+      leftArm.stopMotor();
+      rightArm.stopMotor();
+    }
+      
     if (operator.getRawButton(XboxController.Button.kRightBumper.value) && hangToggle == false) {
       hangToggle = true;
       new WaitCommand(.2);
@@ -372,25 +420,25 @@ import java.util.Optional;
       hangToggle = false;
       new WaitCommand(.2);
     }
-    if (driver.getRawButton(PS4Controller.Button.kL1.value)) {
+    if (driver.getRawAxis(PS4Controller.Axis.kL2.value) > .1) {
       index1.set(-.75);
       index2.set(-.75);
-    } else if (driver.getRawButton(PS4Controller.Button.kR1.value)) {
+    } else if (driver.getRawAxis(PS4Controller.Axis.kR2.value) > .1) {
       index1.set(.75);
       index2.set(.75);
-    }else if (driver.getRawButton(PS4Controller.Button.kCircle.value)){
-      index1.set(.25);
-      index2.set(.25);
+    // }else if (driver.getRawButton(PS4Controller.Button.kCircle.value)){
+    //   index1.set(.25);
+    //   index2.set(.25);
     } else {
       index1.stopMotor();
       index2.stopMotor();
     }
-    if (driver.getRawAxis(PS4Controller.Axis.kL2.value) > .1) {
-      intake1.set(-1);
-      intake2.set(-1);
-    } else if (driver.getRawAxis(PS4Controller.Axis.kR2.value) > .1) {
+    if (driver.getRawButton(PS4Controller.Button.kCircle.value)) {
       intake1.set(1);
       intake2.set(1);
+    } else if (driver.getRawButton(PS4Controller.Button.kR1.value)) {
+      intake1.set(-1);
+      intake2.set(-1);
     }
     else {
       intake1.stopMotor();
@@ -404,30 +452,20 @@ import java.util.Optional;
       rightFlywheel.set(-.4);
   
     } else if (operator.getRawButton(XboxController.Button.kY.value)){
-      leftFlywheel.set(.08);
-      rightFlywheel.set(.20);
-    // } else if (operator.getRawButton(XboxController.Button.kX.value)){
-    //   leftFlywheel.set(.05);
-    //   rightFlywheel.set(.05);
-    // }
-    } else { 
-
+      leftFlywheel.set(.12);
+      rightFlywheel.set(.25);
+      index1.set(.35);
+      index2.set(.35);
+    } else {
       leftFlywheel.stopMotor();
       rightFlywheel.stopMotor();
+
     }
-    
-    if (operator.getRawAxis(XboxController.Axis.kLeftTrigger.value) > .1) {
-      leftArm.set(operator.getRawAxis(XboxController.Axis.kLeftTrigger.value)*.6);
-      rightArm.set(-operator.getRawAxis(XboxController.Axis.kLeftTrigger.value)*.6);
-    } else if (operator.getRawAxis(XboxController.Axis.kRightTrigger.value) > .1) {
-      leftArm.set(-operator.getRawAxis(XboxController.Axis.kRightTrigger.value)*.6);
-      rightArm.set(operator.getRawAxis(XboxController.Axis.kRightTrigger.value)*.6);
-    } else { 
-      leftArm.stopMotor();
-      rightArm.stopMotor();
+    led1.setData(led1Buffer);
+    if (operator.getRawButton(XboxController.Button.kBack.value)) {
+      encoder.reset();
     }
-    // led1.setData(led1Buffer);
-  }
+}
 
   @Override
   public void testInit() {
