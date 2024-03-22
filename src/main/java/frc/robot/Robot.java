@@ -379,7 +379,7 @@ import edu.wpi.first.wpilibj.Encoder;
     s2.set(hangToggle);
     if (driver.getRawButton(PS4Controller.Button.kL1.value)) {
       redLed();
-    } else if (encoder.getDistance() > 480) {
+    } else if (encoder.getDistance() > 418  ) {
       purpleLed();
       operator.setRumble(RumbleType.kBothRumble, .5);
     } else if ((encoder.getDistance() > 90 && encoder.getDistance() < 120) && kobeMode) {
@@ -390,9 +390,8 @@ import edu.wpi.first.wpilibj.Encoder;
       off();
     }
 
-    if (operator.getRawButton(XboxController.Button.kX.value)) {
-      if (ampMode == false) {
-        if (encoder.getDistance() < 484.25) {
+    if (operator.getPOV() == 0) {
+        if (encoder.getDistance() < 420.25) {
           leftArm.set(-1);
           rightArm.set(1);
           taylorTimer.reset();
@@ -404,19 +403,20 @@ import edu.wpi.first.wpilibj.Encoder;
                   
           //blueLed();
           ampMode = true;
-        }
-      } else {
-        if (encoder.getDistance() > 0) {
+      }
+    }else if (operator.getPOV() == 180) {
+        if (encoder.getDistance() > 5) {
           leftArm.set(1);
           rightArm.set(-1);
           taylorTimer.reset();
           taylorTimer.stop();
-        } if (encoder.getDistance() < 0) {
+        } if (encoder.getDistance() < 5) {
           leftArm.stopMotor();
           rightArm.stopMotor();
           ampMode = false;
-        }
+        
       }
+       
     }else if (operator.getRawButton(XboxController.Button.kStart.value)) {
       if (kobeMode == false) {
         if (encoder.getDistance() < 100) {
@@ -492,10 +492,10 @@ import edu.wpi.first.wpilibj.Encoder;
       rightFlywheel.set(-.4);
   
     } else if (operator.getRawButton(XboxController.Button.kY.value)){
-      leftFlywheel.set(.12);
-      rightFlywheel.set(.25);
-      index1.set(.35);
-      index2.set(.35);
+      leftFlywheel.set(.28);
+      rightFlywheel.set(.42);
+      index1.set(.40);
+      index2.set(.40);
     } else {
       leftFlywheel.stopMotor();
       rightFlywheel.stopMotor();
