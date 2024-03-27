@@ -31,9 +31,9 @@ public class midauto2 extends SequentialCommandGroup {
                 // Start at the origin facing the +X direction
                 new Pose2d(-.1, .1, new Rotation2d(0)), // 2.2, -.6
                 // Pass through these two interior waypoints, making an 's' curve path
-                List.of(new Translation2d(1, -1.5), new Translation2d(2.00, -1.50)),
+                List.of(new Translation2d(-.5, -1.5), new Translation2d(-.4, -1.50)),
                 // End 3 meters straight ahead of where we started, facing forward
-                new Pose2d(-.35, .2, new Rotation2d(0)),
+                new Pose2d(-.4,-1.50, new Rotation2d(20)),
                 config);
         Trajectory traj1 = TrajectoryGenerator.generateTrajectory(
             new Pose2d(0,0, new Rotation2d(0)), 

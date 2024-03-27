@@ -46,6 +46,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import java.util.Optional;
 
 import javax.management.loading.PrivateClassLoader;
+import javax.print.CancelablePrintJob;
 
 import edu.wpi.first.wpilibj.Encoder;
 
@@ -113,7 +114,39 @@ import edu.wpi.first.wpilibj.Encoder;
    */
 
    //led poop 
-
+   private void pivotArmUp(double angle) {
+    double cAngle = encoder.getDistance();
+    double speedProp = (1 - (cAngle / angle)) * .5;
+    if (cAngle < angle) {
+          leftArm.set(-.15 - speedProp);
+          rightArm.set(.15 + speedProp);
+          taylorTimer.reset();
+          taylorTimer.stop();
+        } else {
+          leftArm.stopMotor();
+          rightArm.stopMotor();
+      }
+    if (cAngle >= angle) {
+      leftArm.stopMotor();
+      rightArm.stopMotor();
+    }
+   }
+   private void pivotArmDown(double angle) {
+    double cAngle = encoder.getDistance();
+    if (cAngle > angle) {
+          leftArm.set(.6);
+          rightArm.set(-.6);
+          taylorTimer.reset();
+          taylorTimer.stop();
+        } else {
+          leftArm.stopMotor();
+          rightArm.stopMotor();
+      }
+    if (cAngle <= angle) {
+      leftArm.stopMotor();
+      rightArm.stopMotor();
+    }
+   }
     private void orangeLed() {
       for (var i = 0; i < led1Buffer.getLength(); i++) {
       led1Buffer.setLED(i,Color.kOrange);
@@ -209,6 +242,7 @@ import edu.wpi.first.wpilibj.Encoder;
     encoder.reset();
     led1.setData(led1Buffer);
     led1.start();
+
   }
   
   /**
@@ -227,6 +261,7 @@ import edu.wpi.first.wpilibj.Encoder;
     CommandScheduler.getInstance().run();
     
     SmartDashboard.putNumber("Encoder Distance",encoder.getDistance());
+    SmartDashboard.putNumber("Auton Timer",time1.get());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -244,6 +279,8 @@ import edu.wpi.first.wpilibj.Encoder;
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    time1.start();
+
     Optional<Alliance> ally = DriverStation.getAlliance();
     if (ally.get() == Alliance.Red) {
       redLed();
@@ -251,12 +288,8 @@ import edu.wpi.first.wpilibj.Encoder;
     if (ally.get() == Alliance.Blue) {
       blueLed();
     }
-
-    time1.start();
     leftFlywheel.set(.8);
-    rightFlywheel.set(.8);
-    new WaitCommand(3);
-    
+    rightFlywheel.set(.8);    
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_midAutonCommand = m_robotContainer.midAutonCommand();
     m_rightAutoCommand0 = m_robotContainer.rightAutoCommand0();
@@ -277,39 +310,78 @@ import edu.wpi.first.wpilibj.Encoder;
   public void autonomousPeriodic() {
     // if (m_robotContainer.m_chooser.getSelected() == m_midAutonCommand) {
         //Beginning Mid autonomous code
-      if (time1.get() > .7 && time1.get() < 1.3) {
+
+
+      if (time1.get() > .5 && time1.get() < 1.4) {
         index1.set(1);
         index2.set(1); 
         intake1.set(-1);
         intake2.set(-1);
       }
-      if (time1.get() > 1.3 && time1.get() < 2.5){
-        index1.set(-.2);
-        index2.set(-.2);
-        leftFlywheel.set(-.4);
-        rightFlywheel.set(-.4);
-        
-      } else if (time1.get() > 3.9 && time1.get() < 4.4) {
+      if (time1.get() > 1.4 && time1.get() < 3.4){
+        index1.set(-.4);
+        index2.set(-.4);
+      } 
+      else if (time1.get() > 3.5 && time1.get() < 4.6) {
         // intake1.set(.4);
         // intake2.set(.4);
+        index1.stopMotor();
+        index2.stopMotor();
+        pivotArmUp(162.25);
         leftFlywheel.set(.8);
         rightFlywheel.set(.8);
-      }
-      else if (time1.get() > 4.7 && time1.get() < 5.5){
+        m_autonomousCommand.cancel();
+      } if ((time1.get() > 4.6 && time1.get() < 5) && encoder.getDistance() > 135) {
         index1.set(1);
         index2.set(1);
-        leftFlywheel.set(.8);
-        rightFlywheel.set(.8);
-      } 
-      else if (time1.get() > 6 && time1.get() < 6.4) {
-        index1.set(-.3);
-        index2.set(-.3);
-      } else if (time1.get() > 6.5 && time1.get() < 7.0) {
-        m_midAutonCommand2.schedule();
-      } else if (time1.get() > 11.8 && time1.get() < 12.3) {
+        leftArm.stopMotor();
+        rightArm.stopMotor();
+      }
+      if ((time1.get() > 5 && time1.get() < 8)) {
+        if (m_midAutonCommand2 != null) {
+          m_midAutonCommand2.schedule();
+        }
+        index1.set(-.05);
+        index2.set(-.05);
+        pivotArmDown(10);
+      }
+      if ((time1.get() > 7 && time1.get() < 9)) {
+        index1.stopMotor();
+        index2.stopMotor();
+        pivotArmUp(144);
+      } if ((time1.get() > 9 && time1.get() < 9.5) && encoder.getDistance() > 140) {
         index1.set(1);
         index2.set(1);
+        leftArm.stopMotor();
+        rightArm.stopMotor();
+      }if ((time1.get() > 10 && time1.get() < 12)) {
       }
+      // if (time1.get() > )
+
+
+      // else if (time1.get() > 4.7 && time1.get() < 5.5){
+      //   index1.set(1);
+      //   index2.set(1);
+      //   leftFlywheel.set(.8);
+      //   rightFlywheel.set(.8);
+      // } 
+      // else if (time1.get() > 6 && time1.get() < 6.4) {
+      //   index1.set(-.3);
+      //   index2.set(-.3);
+      // } else if (time1.get() > 6.5 && time1.get() < 7.0) {
+      //   m_midAutonCommand2.schedule();
+      // } else if (time1.get() > 11.8 && time1.get() < 12.3) {
+      //   index1.set(1);
+      //   index2.set(1);
+      // }
+
+
+      // if (time1.get() > 1 && time1.get() < 2.5) {
+      //   pivotArmUp(138.75);
+      // } else {
+      //   index1.set(1);
+      //   index2.set(1);
+      // }
     }
     
     // if (m_robotContainer.m_chooser.getSelected() == m_autonomousCommand) {
@@ -443,6 +515,10 @@ import edu.wpi.first.wpilibj.Encoder;
           kobeMode = false;
         }
       }
+      
+    
+    } else if (operator.getPOV() == 90){
+      pivotArmUp(140);
     } else if (operator.getRawAxis(XboxController.Axis.kLeftTrigger.value) > .1) {
       leftArm.set(operator.getRawAxis(XboxController.Axis.kLeftTrigger.value)*.6);
       rightArm.set(-operator.getRawAxis(XboxController.Axis.kLeftTrigger.value)*.6);
@@ -485,17 +561,17 @@ import edu.wpi.first.wpilibj.Encoder;
       intake2.stopMotor();
     }
     if (operator.getRawButton(XboxController.Button.kA.value)) {
-      leftFlywheel.set(.85);//.65
-      rightFlywheel.set(.85);//.65
+      leftFlywheel.set(.75);//.65
+      rightFlywheel.set(.75);//.65
     } else if (operator.getRawButton(XboxController.Button.kB.value)) {
       leftFlywheel.set(-.4);
       rightFlywheel.set(-.4);
   
     } else if (operator.getRawButton(XboxController.Button.kY.value)){
-      leftFlywheel.set(.28);
-      rightFlywheel.set(.42);
-      index1.set(.40);
-      index2.set(.40);
+      leftFlywheel.set(.18);
+      rightFlywheel.set(.32);
+      index1.set(.30);
+      index2.set(.30);
     } else {
       leftFlywheel.stopMotor();
       rightFlywheel.stopMotor();
