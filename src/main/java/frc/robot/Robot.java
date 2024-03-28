@@ -90,6 +90,7 @@ import edu.wpi.first.wpilibj.Encoder;
   private Command m_rightAutoCommand1;
   private Command m_rightAutoCommand2;
   private Command m_midAutonCommand2;
+  private Command m_midAutonCommand3;
   private final Joystick operator = new Joystick(1);
   private final Joystick driver = new Joystick(0);
   Thread m_visionThread;
@@ -297,7 +298,8 @@ import edu.wpi.first.wpilibj.Encoder;
       blueLed();
     }
     leftFlywheel.set(.8);
-    rightFlywheel.set(.8);    
+    rightFlywheel.set(.8);   
+    m_midAutonCommand3 = m_robotContainer.midAutonCommand3();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_midAutonCommand = m_robotContainer.midAutonCommand();
     m_rightAutoCommand0 = m_robotContainer.rightAutoCommand0();
@@ -333,7 +335,7 @@ import edu.wpi.first.wpilibj.Encoder;
       if (time1.get() > 3 && time1.get() < 3.4){
          m_autonomousCommand.cancel();
       }
-      if (time1.get() > 3.5 && time1.get() < 4.6) {
+      if (time1.get() > 3.8 && time1.get() < 4.6) {
         // intake1.set(.4);
         // intake2.set(.4);
         index1.stopMotor();
@@ -351,25 +353,40 @@ import edu.wpi.first.wpilibj.Encoder;
         if (m_midAutonCommand2 != null) {
           m_midAutonCommand2.schedule();
         }
-        index1.set(-.05);
-        index2.set(-.05);
+        leftFlywheel.stopMotor();
+        rightFlywheel.stopMotor();
+        index1.set(-.1);
+        index2.set(-.1);
         pivotArmDown(10);
         off();
       }
       if ((time1.get() > 7 && time1.get() < 9)) {
+      }if ((time1.get() > 7.8 && time1.get() < 8.2)) {
+        m_midAutonCommand2.cancel();
+      } 
+      if ((time1.get() > 9 && time1.get() < 9.5)) {
+        if (m_midAutonCommand3 != null) {
+          m_midAutonCommand3.schedule();
+        }
+        // index1.set(1);
+        // index2.set(1);
+        // leftArm.stopMotor();
+        // rightArm.stopMotor();
+      }if ((time1.get() > 12 && time1.get() < 13)) {
         index1.stopMotor();
         index2.stopMotor();
-      }if ((time1.get() > 8.5 && time1.get() < 9)) {
-        m_midAutonCommand2.cancel();
-
-      } 
-      if ((time1.get() > 9 && time1.get() < 9.5) && encoder.getDistance() > 140) {
+        pivotArmUp(162.25);
+        leftFlywheel.set(.8);
+        rightFlywheel.set(.8);
+      }
+      if ((time1.get() > 13.5 && time1.get() < 5) && encoder.getDistance() > 135) {
         index1.set(1);
         index2.set(1);
         leftArm.stopMotor();
         rightArm.stopMotor();
-      }if ((time1.get() > 10 && time1.get() < 12)) {
-        off();
+      }
+      if (time1.get() > 14 && time1.get() < 15) {
+        pivotArmDown(2);
       }
       // if (time1.get() > )
 

@@ -29,11 +29,11 @@ public class midauto3 extends SequentialCommandGroup {
         Trajectory midTrajectory =
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
-                new Pose2d(0, 0, new Rotation2d(0)), // 2.2, -.6
+                new Pose2d(-.1, .1, new Rotation2d(0)), // 2.2, -.6
                 // Pass through these two interior waypoints, making an 's' curve path
-                List.of(new Translation2d(-1.27, -3.048), new Translation2d(.2, -3.048)),
+                List.of(new Translation2d(0, 1.2), new Translation2d(-.3, 1.55)),
                 // End 3 meters straight ahead of where we started, facing forward
-                new Pose2d(4, .2, new Rotation2d(-20)),
+                new Pose2d(-.2,1.55, new Rotation2d(0)),
                 config);
         Trajectory traj1 = TrajectoryGenerator.generateTrajectory(
             new Pose2d(0,0, new Rotation2d(0)), 
