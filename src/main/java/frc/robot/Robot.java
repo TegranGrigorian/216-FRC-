@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.autos.midauto2;
 
+import com.ctre.phoenix6.StatusSignal;
 //motor and external libraries
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -42,7 +43,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
 import edu.wpi.first.cameraserver.CameraServer;
 
-
+import java.lang.invoke.TypeDescriptor.OfField;
 import java.util.Optional;
 
 import javax.management.loading.PrivateClassLoader;
@@ -227,7 +228,15 @@ import edu.wpi.first.wpilibj.Encoder;
     led1Buffer.setLED(i,Color.kCyan);
   }
   }
-  
+  private void flashGreen() {
+  for (var i = 0; i < led1Buffer.getLength() + 10; i++) {
+    led1Buffer.setLED(i,Color.kGreen);
+    led1Buffer.setLED(i - 10, Color.kBlack);
+    if (i == led1Buffer.getLength() + 10) {
+      i = 0;
+    }
+  }
+  }
 
   @Override
   public void robotInit() {
@@ -259,7 +268,6 @@ import edu.wpi.first.wpilibj.Encoder;
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    
     SmartDashboard.putNumber("Encoder Distance",encoder.getDistance());
     SmartDashboard.putNumber("Auton Timer",time1.get());
   }
@@ -322,7 +330,10 @@ import edu.wpi.first.wpilibj.Encoder;
         index1.set(-.4);
         index2.set(-.4);
       } 
-      else if (time1.get() > 3.5 && time1.get() < 4.6) {
+      if (time1.get() > 3 && time1.get() < 3.4){
+         m_autonomousCommand.cancel();
+      }
+      if (time1.get() > 3.5 && time1.get() < 4.6) {
         // intake1.set(.4);
         // intake2.set(.4);
         index1.stopMotor();
@@ -330,31 +341,35 @@ import edu.wpi.first.wpilibj.Encoder;
         pivotArmUp(162.25);
         leftFlywheel.set(.8);
         rightFlywheel.set(.8);
-        m_autonomousCommand.cancel();
       } if ((time1.get() > 4.6 && time1.get() < 5) && encoder.getDistance() > 135) {
         index1.set(1);
         index2.set(1);
         leftArm.stopMotor();
         rightArm.stopMotor();
       }
-      if ((time1.get() > 5 && time1.get() < 8)) {
+      if ((time1.get() > 5.3 && time1.get() < 8)) {
         if (m_midAutonCommand2 != null) {
           m_midAutonCommand2.schedule();
         }
         index1.set(-.05);
         index2.set(-.05);
         pivotArmDown(10);
+        off();
       }
       if ((time1.get() > 7 && time1.get() < 9)) {
         index1.stopMotor();
         index2.stopMotor();
-        pivotArmUp(144);
-      } if ((time1.get() > 9 && time1.get() < 9.5) && encoder.getDistance() > 140) {
+      }if ((time1.get() > 8.5 && time1.get() < 9)) {
+        m_midAutonCommand2.cancel();
+
+      } 
+      if ((time1.get() > 9 && time1.get() < 9.5) && encoder.getDistance() > 140) {
         index1.set(1);
         index2.set(1);
         leftArm.stopMotor();
         rightArm.stopMotor();
       }if ((time1.get() > 10 && time1.get() < 12)) {
+        off();
       }
       // if (time1.get() > )
 
@@ -382,48 +397,7 @@ import edu.wpi.first.wpilibj.Encoder;
       //   index1.set(1);
       //   index2.set(1);
       // }
-    }
-    
-    // if (m_robotContainer.m_chooser.getSelected() == m_autonomousCommand) {
-      // begining left side Autonomus code
-      // if (time1.get() > 1 && time1.get() < 1.1 ) {
-      //   index1.set(-.75);
-      //   index2.set(-.75); 
-      // } else if(time1.get()>1.2 && time1.get()<4.9){
-      //   index1.stopMotor();
-      //   index2.stopMotor();
-      // } else if(time1.get() >6.5 && time1.get()<10.5) {
-      //   index1.set(.75);
-      //   index2.set(.75);
-      // }
-      // // end of begining left side autonomus code
-    // }
-    //if (m_robotContainer.m_chooser.getSelected() == m_rightAutoCommand0) {
-      // // beggining of right side auton
-    // if (time1.get() > .5 && time1.get() < 1.2) {
-    //   index1.set(1);
-    //   index2.set(1); 
-    // }
-    // if (time1.get() > 1.7 && time1.get() < 2.5){
-    //   index1.stopMotor();
-    //   index2.stopMotor();
-      
-    // }
-    // if (time1.get() > 3.5 && time1.get() < 4){
-    //   leftFlywheel.set(-.5);
-    //   rightFlywheel.set(-.5);
-    // }
-    // if (time1.get() > 7 && autonSwitch == false && time1.get() < 10){
-    //   autonSwitch = true;
-    //   m_rightAutoCommand1.schedule();
-    // }
-    // if (time1.get() > 10.5 && autonSwitch == true){
-    //   autonSwitch = false;
-    //   m_rightAutoCommand2.schedule();
-    // }
-    //}
-    
-    
+  }
 
   @Override
   public void teleopInit() {
@@ -518,7 +492,11 @@ import edu.wpi.first.wpilibj.Encoder;
       
     
     } else if (operator.getPOV() == 90){
-      pivotArmUp(140);
+      pivotArmUp(164);
+      if (encoder.get() > 160) {
+        greenLed();  
+      }
+      
     } else if (operator.getRawAxis(XboxController.Axis.kLeftTrigger.value) > .1) {
       leftArm.set(operator.getRawAxis(XboxController.Axis.kLeftTrigger.value)*.6);
       rightArm.set(-operator.getRawAxis(XboxController.Axis.kLeftTrigger.value)*.6);
@@ -572,6 +550,9 @@ import edu.wpi.first.wpilibj.Encoder;
       rightFlywheel.set(.32);
       index1.set(.30);
       index2.set(.30);
+    } else if (operator.getPOV() == 90) { 
+      leftFlywheel.set(.75);
+      rightFlywheel.set(.75);
     } else {
       leftFlywheel.stopMotor();
       rightFlywheel.stopMotor();
