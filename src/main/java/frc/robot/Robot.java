@@ -91,6 +91,7 @@ import edu.wpi.first.wpilibj.Encoder;
   private Command m_rightAutoCommand2;
   private Command m_midAutonCommand2;
   private Command m_midAutonCommand3;
+  private Command m_midAutonCommand4;
   private final Joystick operator = new Joystick(1);
   private final Joystick driver = new Joystick(0);
   Thread m_visionThread;
@@ -306,6 +307,7 @@ import edu.wpi.first.wpilibj.Encoder;
     m_rightAutoCommand1 = m_robotContainer.rightautoCommand1();
     m_rightAutoCommand2 = m_robotContainer.rightAutoCommand2();
     m_midAutonCommand2 = m_robotContainer.midAutonCommand2();
+    // m_midAutonCommand4 = m_robotContainer.midAutonCommand4();
     // schedule the autonomous command (example)
 
     if (m_autonomousCommand != null) {
@@ -328,7 +330,7 @@ import edu.wpi.first.wpilibj.Encoder;
         intake1.set(-1);
         intake2.set(-1);
       }
-      if (time1.get() > 1.4 && time1.get() < 3.4){
+      if (time1.get() > 1.8 && time1.get() < 3.4){
         index1.set(-.4);
         index2.set(-.4);
       } 
@@ -340,7 +342,7 @@ import edu.wpi.first.wpilibj.Encoder;
         // intake2.set(.4);
         index1.stopMotor();
         index2.stopMotor();
-        pivotArmUp(162.25);
+        pivotArmUp(164.25);
         leftFlywheel.set(.8);
         rightFlywheel.set(.8);
       } if ((time1.get() > 4.6 && time1.get() < 5) && encoder.getDistance() > 135) {
@@ -373,11 +375,15 @@ import edu.wpi.first.wpilibj.Encoder;
         // leftArm.stopMotor();
         // rightArm.stopMotor();
       }if ((time1.get() > 12 && time1.get() < 13)) {
+        // m_midAutonCommand3.cancel();
         index1.stopMotor();
         index2.stopMotor();
-        pivotArmUp(162.25);
+        pivotArmUp(164.25);
         leftFlywheel.set(.8);
         rightFlywheel.set(.8);
+        if (m_midAutonCommand4 != null ) {
+          m_midAutonCommand4.schedule();
+        }
       }
       if ((time1.get() > 13.5 && time1.get() < 5) && encoder.getDistance() > 135) {
         index1.set(1);
@@ -509,7 +515,7 @@ import edu.wpi.first.wpilibj.Encoder;
       
     
     } else if (operator.getPOV() == 90){
-      pivotArmUp(164);
+      pivotArmUp(165.25);
       if (encoder.get() > 160) {
         greenLed();  
       }
