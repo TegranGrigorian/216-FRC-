@@ -2,6 +2,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+/*
+ * This is the LED controller, it contains functions that control the leds(woah thats crazy). These functions typically have inputs for hue, brightness and saturaiton.
+ */
+
+
 
 public class Leds {
     private final AddressableLED leds;

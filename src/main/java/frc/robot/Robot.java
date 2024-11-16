@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.Swerve;
+import frc.robot.subsystems.IntakeSubsystem;
 
 import java.util.Optional;
 
@@ -53,7 +54,7 @@ import edu.wpi.first.wpilibj.DriverStation;
    * if we didnt have memory manage we would have a overflow later on in the stack (this is where stack overflow comes from) so programming
    * laungauges can direct the hardware, the memeory, to store data which is crucial this is what makes a laungaue low level. However
    * if you dont need to change a varbile then if u make it final u just need to find its memory in ram but nothing about changing it so
-   * it speeds up processing time(slightly) samething with private, if its not extending to all the classes then it will take less time
+   * it speeds up processing time(slightly) same thing with private, if its not extending to all the classes then it will take less time
    * for other classes to intilaze the varbiles its deriving. This is a really bad explanation but its something if your confused
    */
 
@@ -65,9 +66,9 @@ import edu.wpi.first.wpilibj.DriverStation;
       System.out.printIn("in"); // im pretty sure syntax is wrong lol idrc its an example
     }
 
-    yourmom(10); // <-the 10 inside is the input, x yourmom is the function name we made and we call the function to perform a task.
+    yourmom(10); // <-the 10 inside is the input, x, yourmom is the function name we made and we call the function to perform a task.
 
-    the void is telling the compier that you are making a function, yourmom is the name, int in is a integer data type called in(its the x)
+    the void is telling the compier that you are making a function with no return, yourmom is the name, int in is a integer data type called in(its the x)
     and the {} have code inside of them that the function will proccess and output. so in this case out put the what the user put in
     to the console
 
