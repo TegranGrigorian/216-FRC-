@@ -21,7 +21,7 @@ import frc.robot.subsystems.*;
  */
 public class RobotContainer {
     /* Controllers */
-
+    
     SendableChooser<Command> m_chooser = new SendableChooser<>();
     private final Joystick driver = new Joystick(0);
     /* Drive Controls */
@@ -35,8 +35,6 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
-
-
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         s_Swerve.setDefaultCommand(

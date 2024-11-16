@@ -110,7 +110,6 @@ import edu.wpi.first.wpilibj.DriverStation;
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   public Leds ledController;
-
   private double startTime;
   /**
    * This function is run when the robot is first started up and shoulutd be used for any
@@ -122,7 +121,6 @@ import edu.wpi.first.wpilibj.DriverStation;
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     m_compressor.enableDigital();
-    
     //led initalizations!
     ledController = new Leds(0,100); //0 -> port, 100 -> buffer amount of leds object you wnat to configure
     /*
@@ -176,7 +174,6 @@ import edu.wpi.first.wpilibj.DriverStation;
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-   
     time1.start();
     leftFlywheel.set(.8);
     rightFlywheel.set(.8);
