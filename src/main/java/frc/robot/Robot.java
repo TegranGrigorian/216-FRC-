@@ -164,11 +164,13 @@ import edu.wpi.first.wpilibj.DriverStation;
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    ledController.setRainbow(5, 128, 255);
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    ledController.setRainbow(5, 128, 255);
+
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
