@@ -31,7 +31,7 @@ public class rightsideauto extends SequentialCommandGroup {
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)), // 2.2, -.6
                 // Pass through these two interior waypoints, making an 's' curve path
-                List.of(new Translation2d(5.5, 2.54), new Translation2d(7.24, 4.9)),
+                List.of(new Translation2d(6.5, 3.85), new Translation2d(7.24, 4.9)),
                 // End 3 meters straight ahead of where we started, facing forward
                 new Pose2d(5, 5, new Rotation2d(45)),
                 config);

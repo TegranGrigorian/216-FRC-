@@ -58,7 +58,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
   private boolean hangToggle = false;
   //private final Joystick driver = new Joystick(0);
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
-
+  priate final Limelight lmlght = New Limelight();
   private Command m_autonomousCommand;
   private Command m_midAutonCommand;
   private RobotContainer m_robotContainer;
