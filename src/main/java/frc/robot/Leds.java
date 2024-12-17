@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import frc.robot.subsystems.IntakeSubsystem;
 
 public class Leds {
     private final AddressableLED leds;
@@ -123,5 +124,11 @@ public class Leds {
             }
         }
         leds.setData(ledBuffer);
+    }
+    public void setLedsIfIntakeDetects() { //example function of what you could do if you want the leds to light up if the laser break detects something
+        IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+        if (intakeSubsystem.isLaserBreakTriggered()) {
+            setBlink(120, 100, 100, 10, 1000); //do some cool light stuff.
+        }
     }
 }

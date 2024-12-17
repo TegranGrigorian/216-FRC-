@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
@@ -143,5 +145,20 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    }
+    public static final class Arm {
+        public static final int LEFT_ARM_CAN_PORT = 3;
+        public static final int ARM_ENCODER_CHANNEL_A = 0;
+        public static final int ARM_ENCODER_CHANNEL_B = 1;  
+    }
+    public static final class Pneumatics {
+        public static final int PCM_CAN_PORT = 10;
+        public static final int ARM_SOLENOID_PORT = 1;
+    }
+    public static final class Intake {
+        public static final int INTAKE_PWM_PORT = 2; 
+        public static final int INTAKE_ENCODER_CHANNEL_A = 4; 
+        public static final int INTAKE_ENCODER_CHANNEL_B = 5; 
+        public static final int LASER_BREAK_SENSOR_PORT = 6;  
     }
 }
