@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.autos.*;
+import frc.robot.autos.Old.*;
+
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
@@ -63,7 +64,6 @@ public class RobotContainer {
         // Add commands to the autonomous command chooser
         m_chooser.setDefaultOption("Default", getAutonomousCommand()); // set default auton
         m_chooser.addOption("Mid", midAutonCommand());
-        m_chooser.addOption("Right", rightAutoCommand0()); // a separate identical line with the addOption function must be imported for more autons
         
         // Put the chooser on the dashboard and send the data
         SmartDashboard.putData(m_chooser);
@@ -100,10 +100,6 @@ public class RobotContainer {
 
     public Command midAutonCommand() {
         return new midauto(s_Swerve);
-    }
-
-    public Command rightAutoCommand0() {
-        return new rightsideauto(s_Swerve);
     }
 
     public Command rightautoCommand1() {

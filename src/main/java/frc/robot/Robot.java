@@ -13,12 +13,7 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants.Swerve;
-import frc.robot.subsystems.pneumaticsSubSystem;
-
 import java.util.Optional;
-
-import javax.swing.text.html.Option;
 
 //motor and external libraries
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -26,11 +21,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 
 /**
@@ -94,7 +86,6 @@ import edu.wpi.first.wpilibj.DriverStation;
   Spark intake2 = new Spark(3);
   private Timer time2 = new Timer();
   private Timer time1 = new Timer();
-  private boolean autonSwitch = false;
   private boolean hangToggle = false;
   //private final Joystick driver = new Joystick(0);
   public static final CTREConfigs ctreConfigs = new CTREConfigs(); //umm u dont want ur stuf
@@ -183,7 +174,6 @@ import edu.wpi.first.wpilibj.DriverStation;
     intake2.set(-1);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_midAutonCommand = m_robotContainer.midAutonCommand();
-    m_rightAutoCommand0 = m_robotContainer.rightAutoCommand0();
     m_rightAutoCommand1 = m_robotContainer.rightautoCommand1();
     m_rightAutoCommand2 = m_robotContainer.rightAutoCommand2();
     // schedule the autonomous command (example)

@@ -16,8 +16,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // Constants for intake system
     private static final double MAX_INTAKE_SPEED = 1.0;
-    private static final double MIN_INTAKE_SPEED = 0.1;
-    private static final double INTAKE_SLOW_SPEED = 0.3;
+    // private static final double MIN_INTAKE_SPEED = 0.1;
+    // private static final double INTAKE_SLOW_SPEED = 0.3;
 
     public IntakeSubsystem() {
         intakeMotor = new Spark(Constants.Intake.INTAKE_PWM_PORT);

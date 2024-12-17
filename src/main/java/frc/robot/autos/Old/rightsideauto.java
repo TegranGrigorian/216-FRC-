@@ -1,4 +1,4 @@
-package frc.robot.autos;
+package frc.robot.autos.Old;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
-public class midauto extends SequentialCommandGroup {
-    public midauto(Swerve s_Swerve){
+public class rightsideauto extends SequentialCommandGroup {
+    public rightsideauto(Swerve s_Swerve){
         TrajectoryConfig config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
@@ -26,14 +26,14 @@ public class midauto extends SequentialCommandGroup {
                 .setKinematics(Constants.Swerve.swerveKinematics);
 
         // An example trajectory to follow.  All units in meters.
-        Trajectory midTrajectory =
+        Trajectory exampleTrajectory =
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)), // 2.2, -.6
                 // Pass through these two interior waypoints, making an 's' curve path
-                List.of(new Translation2d(2.159, 0), new Translation2d(-.1, 0)),
+                List.of(new Translation2d(6.5, 3.85), new Translation2d(7.24, 4.9)),
                 // End 3 meters straight ahead of where we started, facing forward
-                new Pose2d(3.3, -.1, new Rotation2d(0)),
+                new Pose2d(5, 5, new Rotation2d(45)),
                 config);
         Trajectory traj1 = TrajectoryGenerator.generateTrajectory(
             new Pose2d(0,0, new Rotation2d(0)), 
@@ -47,7 +47,7 @@ public class midauto extends SequentialCommandGroup {
 
         SwerveControllerCommand swerveControllerCommand =
             new SwerveControllerCommand(
-                midTrajectory,
+                exampleTrajectory,
                 s_Swerve::getPose,
                 Constants.Swerve.swerveKinematics,
                 new PIDController(Constants.AutoConstants.kPXController, 0, 0),
@@ -67,14 +67,11 @@ SwerveControllerCommand swerveControlCommand1 =
                 s_Swerve);
 
         addCommands(
-            new InstantCommand(() -> s_Swerve.setPose(midTrajectory.getInitialPose())),
+            new InstantCommand(() -> s_Swerve.setPose(exampleTrajectory.getInitialPose())),
             swerveControllerCommand
         );
 
-        addCommands(
-            new InstantCommand(() -> s_Swerve.setPose(traj1.getInitialPose())),
-            swerveControlCommand1
-        );
+        
     }
 }
 

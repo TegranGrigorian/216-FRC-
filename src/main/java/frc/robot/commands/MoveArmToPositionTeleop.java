@@ -1,9 +1,9 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.ArmSubsystem;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class MoveArmToPositionTeleop extends CommandBase {
+public class MoveArmToPositionTeleop extends Command {
     private final ArmSubsystem armSubsystem;
     private final double targetAngle;
     private final double timeInSeconds;
